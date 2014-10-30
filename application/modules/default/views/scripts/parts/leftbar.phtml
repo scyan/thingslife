@@ -1,0 +1,18 @@
+<?php if($this->tab=='me'):?>
+<ul class="navi">
+<li id="inbox"><a href="/task/index/box/inbox" ><b class="icon1"></b><span>收集箱</span></a></li>
+<li id="today"><a href="/task/index/box/today"><b class="icon2"></b><span>今日待办</span>（<span id="countToday"><?php echo $this->countToday;?></span>）</a></li>
+<li id="schedule"><a href="/task/index/box/schedule" ><b class="icon4"></b><span>日程</span></a></li>
+<li id="someday"><a href="/task/index/box/someday"  ><b class="icon5"></b><span>择日待办</span></a></li>
+<li id="done"><a href="/task/index/box/done" ><b class="icon6"></b><span>已完成</span></a></li>
+<li id="deleted"><a href="/task/index/box/deleted" ><b class="icon7"></b><span>回收站</span></a></li>
+</ul>
+<?php else:?>
+<ul class="navi">
+	<li><a href="javascript:void(0)" ><b class="icon1"></b><span>成员</span></a></li>
+	<li id="0"><a href="javascript:void(0)" class="all"><b class="blank"></b><span>全部</span></a></li>
+	<?php foreach($this->users as $user):?>
+	<li id="<?php echo $user['_id'];?>" class="userlist"><a href="#done=true&userId=<?php echo $user['_id'];?>&page=1"><b class="blank"></b><span class="member"><?php echo $user['username'];?></span></a></li>
+	<?php endforeach;?>
+</ul>
+<?php endif;?>

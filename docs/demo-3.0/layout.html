@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Layout</title>
+<link rel="stylesheet" type="text/css" href="res/css/reset.css" />
+<link rel="stylesheet" type="text/css" href="res/css/layout.css" />
+<link rel="stylesheet" type="text/css" href="res/css/theme.css" />
+<script src="res/js/jquery-1.4.3.min.js" type="text/javascript"></script>
+<script src="res/js/jquery.autogrow.js" type="text/javascript"></script>
+<script src="res/js/t.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+$(function() {
+	SidebarPanel.bootstrap({
+		type : "focus"
+	});
+	
+	Toolbar.bootstrap();
+
+	$(window).resize();
+	
+	var task = new Task({id: 1, name: "task_1"});
+	
+	
+});
+</script>
+
+</head>
+<body>
+
+<div id="container">
+  <div id="header">
+    <h1>ThingsLife</h1>
+    <div class="top-links">
+      <span class="login-info">您好，<a href="#" class="user-nick">谁谁谁!</a></span>
+      <span class="pipe">|</span>
+      <select name="showMode">
+        <option value="me">我的任务</option>
+        <option value="our">大家的任务</option>
+      </select>
+      <span class="pipe">|</span>
+      <a href="#" class="message">消息(5)</a>
+      <span class="pipe">|</span>
+      <a href="#" class="signout">退出</a>
+    </div>
+  </div>
+  <div id="focus-panel">
+  
+    <div class="focus-bundle collect-bundle">
+      <h3>收集</h3>
+      <ul>
+        <li>
+          <div class="focus-name inbox">收集箱</div>
+          <div class="focus-counter one-counter"><span class="counter due-counter">1</span></div>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="focus-bundle workflow-bundle">
+      <h3>焦点</h3>
+      <ul>
+        <li class="current">
+          <div class="focus-name today">今日待办</div>
+          <div class="focus-counter two-counter">
+            <span class="counter due-counter">1</span><span class="counter todo-counter">5</span>
+          </div>
+        </li>
+        <li>
+          <div class="focus-name next">下一步行动</div>
+          <div class="focus-counter two-counter">
+            <span class="counter due-counter">1</span><span class="counter todo-counter">5</span>
+          </div>
+        </li>
+        <li>
+          <div class="focus-name schedule">日程</div>
+        </li>
+        <li>
+          <div class="focus-name someday">择日待办</div>
+        </li>
+        <li>
+          <div class="focus-name projects">项目</div>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="focus-bundle projects-bundle">
+      <h3 class="opened"><span class="icon">+</span><span class="heading">进行中的项目</span></h3>
+      <ul>
+        <li><div class="focus-name project">project 111</div></li>
+        <li><div class="focus-name project">project 222</div></li>
+      </ul>
+    </div>
+    
+    <div class="focus-bundle contact-bundle">
+      <h3 class="opened"><span class="icon">+</span><span class="heading">成员</span></h3>
+      <ul>
+        <li><div class="focus-name member">member A</div></li>
+        <li><div class="focus-name member">member B</div></li>
+      </ul>
+    </div>
+    
+    <div class="focus-bundle archive-bundle">
+      <ul>
+        <li><div class="focus-name archive">归档</div></li>
+        <li><div class="focus-name trash">回收站</div></li>
+      </ul>
+    </div>
+    
+    
+  </div>
+  <div id="content">
+    <div class="project-info">
+      <div class="title-bar"><div class="checkbox">[ ]</div><textarea class="title">项目标题project title</textarea></div>
+      <div class="title-bar today"><div class="checkbox">[ ]</div><textarea class="title">项目标题project title</textarea></div>
+      <div class="title-bar due"><div class="checkbox">[ ]</div><textarea class="title">项目标题project title</textarea></div>
+      <div class="title-bar done"><div class="checkbox">[ ]</div><textarea class="title">项目标题project title</textarea></div>
+      <div class="duedate-bar"><div class="duedate-flag">[D]</div><input type="text" name="duedate" class="duedate" /> <div class="clear-duedate">X</div> </div>
+      <div class="duedate-bar"><div class="duedate-flag">[D]</div><div class="duedate">12月17日</div></div>
+      <div class="notes-bar"><div class="note-flag">[N]</div><textarea class="notes">notes notes</textarea></div>
+    </div>
+  
+  
+    <div class="group-title">XXXXXXXXXXXXXXXXXXX</div>
+    <ul class="task-list">
+      <li class="today"><div class="checkbox">[ ]</div> <div class="parent">parent:</div>  <div class="title">去图书馆还书！</div><div class="note-flag">[N]</div> <a class="comment-flag" href="#">5评论</a>  <div class="due-text">还有5天</div><div class="today-flag">[T]</div></li>
+      <li class="due selected"><div class="checkbox">[ ]</div><div class="title">去图书馆还书！</div><div class="due-text">今天到期</div><div class="today-flag">[T]</div></li>
+      <li class="today done done-selected"><div class="checkbox">[X]</div><div class="title">去图书馆还书！</div><div class="note-flag">[N]</div><div class="due-text">今天到期</div><div class="today-flag">[T]</div></li>
+      <li class="done"><div class="checkbox">[X]</div><div class="title">去图书馆还书！</div><div class="today-flag">[T]</div></li>
+      <li class="today"><div class="checkbox">[ ]</div><div class="title">去图书馆还书！</div><div class="today-flag">[T]</div></li>
+      <li class="done"><div class="checkbox">[X]</div><div class="title">去图书馆还书！</div><div class="today-flag">[T]</div></li>
+      <li class="today project">
+        <div class="progress-bar"><div class="progress" style="width: 80%;"><a href="#project111">15 任务</a></div></div>
+        <div class="checkbox">[X]</div><div class="title">去图书馆还书！</div>
+      </li>
+      <li class="today project selected">
+        <div class="progress-bar"><div class="progress" style="width: 80%;"><a href="#project111">15 任务</a></div></div>
+        <div class="checkbox">[X]</div><div class="title">去图书馆还书！</div>
+      </li>
+      <li class="today done project">
+        <div class="progress-bar"><div class="progress" style="width: 100%;"><a href="#project111">15 任务</a></div></div>
+        <div class="checkbox">[X]</div><div class="title">去图书馆还书！</div>
+      </li>
+      <li class="today done project done-selected">
+        <div class="progress-bar"><div class="progress" style="width: 100%;"><a href="#project111">15 任务</a></div></div>
+        <div class="checkbox">[X]</div><div class="title">去图书馆还书！</div>
+      </li>
+    </ul>
+    
+    <ul class="task-list inactive-list">
+      <li class=""><div class="checkbox">[ ]</div><div class="title">去图书馆还书！</div><div class="note-flag">[N]</div><div class="due-text">还有5天</div></li>
+      <li class="selected"><div class="checkbox">[ ]</div><div class="title">去图书馆还书！</div><div class="note-flag">[N]</div><div class="due-text">还有5天</div></li>
+      <li class="done"><div class="checkbox">[ ]</div><div class="title">去图书馆还书！</div><div class="note-flag">[N]</div><div class="due-text">还有5天</div></li>
+      <li class="done done-selected"><div class="checkbox">[ ]</div><div class="title">去图书馆还书！</div><div class="note-flag">[N]</div><div class="due-text">还有5天</div></li>
+      <li class="due"><div class="checkbox">[ ]</div><div class="title">去图书馆还书！</div><div class="note-flag">[N]</div><div class="due-text">已过期5天</div></li>
+    </ul>
+    
+    <div class="pagination">
+    <a href="#" class="prev">上一页</a>
+    <a href="#" class="next">下一页</a>
+    </div>
+    
+    <p>END content</p>
+  </div>
+  
+  <div id="toolbar">
+    <div class="leftbar">
+      <a href="#" class="newtask">新增</a>
+      <a href="#" class="newrepeating">新增重复</a>
+      <a href="#" class="addproject disabled">新增项目</a>
+      <a href="#" class="edittask disabled">编辑</a>
+      <a href="#" class="deltask">删除</a>
+    </div>
+    
+    <div class="centerbar">
+      <a href="#" class="schedule">计划</a>
+      <a href="#" class="logcompleted">归档</a>
+      <a href="#" class="today">今日</a>
+      <a href="#" class="today">改日</a>
+      <a href="#" class="showinproject">显示项目</a>
+      <a href="#" class="active">激活</a>
+      <a href="#" class="inactive">冷冻</a>
+    </div>
+    
+    <div class="rightbar">
+      <a href="#" class="quickentry">快速添加</a>
+    </div>
+    
+    
+  </div>
+  
+</div>
+
+</body>
+</html>

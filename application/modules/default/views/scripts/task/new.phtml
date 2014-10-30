@@ -1,0 +1,167 @@
+
+<div class="listing"><a href="#" class="listing_title"><b>添加新任务</b></a>
+<form id="add_form" >
+<div class="listing_box">
+<u><b>标题：</b><input id="title" name="title" class="add_title" type="text" /></u> 
+	<u><b>所属：</b>
+	<select name="box" id="box" >
+	<option value="inbox">收集箱</option>
+	<option value="today">今日待办</option>
+	<option value="schedule">日程</option>
+	<option value="someday">择日待办</option>
+</select> 
+<input name="exeDate" id="exeDate" class="add_time" type="text" readonly="readonly"></u> 
+<u><b>备注：</b><textarea name="note" id="note" class="add_box" cols="" rows=""></textarea></u> 
+<div><a href="#"id="repeat">重复</a><span id="repeat_info"></span></div>
+</div>
+</form>
+<input id="submit" class="add_btn" type="button" value="提交"  /> 
+<input id="continue" class="buttons" type="button" value="继续添加"/>
+<div><b><?php if($this->success==1) {echo '添加成功，请继续！';}?></b></div>
+</div>
+<div id="dialogRepeat" title="repeat">
+<div id="repeat_form">
+<u><b>重复方式:</b></u>
+<select name="repeatType" id="repeatType">
+	<option value="daily" >按日</option>
+	<option value="weekly" >按周</option>
+	<option value="monthly" >按月</option>
+	<option value="yearly" >按年</option>
+</select>
+<div id="repeatDetail"></div>
+</div>
+</div>
+<script type="text/javascript">
+
+ $(document).ready(function(){
+     var box="<?php echo $this->box;?>";
+	 $("#box").val(box);
+	 
+	 var today = new Date();
+	 var editRepeat='false';
+	 var weekdays='';
+	 
+	 var repeatType='';
+     var frequency=0;
+     var days='';	 
+
+	 boxChange();
+	 repeatTypeChange();
+		    
+	 $( "#exeDate" ).datepicker({
+		//showButtonPanel: true ,
+		dateFormat: 'yy-mm-dd',
+		monthNames: ['一月','二月','三月','四月','五月','六月',
+			 			'七月','八月','九月','十月','十一月','十二月'], // Names of months for drop-down and formatting			 		
+        dayNamesMin: ['日','一','二','三','四','五','六'],
+		minDate: 1
+	});
+
+	 $("#box").change(function(){
+		 boxChange();
+		 });
+
+    $("#submit").click(function(){
+    	var exeDate=$("#exeDate").val();
+        var title=$("#title").val();
+        var note=$("#note").val();
+        $.post("/api/tasks/new",{editRepeat:editRepeat,exeDate:exeDate,title:title,note:note,box:$("#box").val(),repeatType:repeatType,frequency:frequency,days:days},function(){
+        	window.location.href="/task/index/box/"+box;
+            });
+   });
+   
+	$("#continue").click(function(){
+		var exeDate=$("#exeDate").val();
+        var title=$("#title").val();
+        var note=$("#note").val();     
+        $.post("/api/tasks/new",{editRepeat:editRepeat,exeDate:exeDate,title:title,note:note,box:$("#box").val(),repeatType:repeatType,frequency:frequency,days:days},function(data){
+        	window.location.reload();
+            });      
+		});	
+	
+	 $(".add_title").keydown(function(event){  
+		      if(event.keyCode==13){  
+		    	  $("#continue").click();
+		        }
+		});
+
+	 $(".add_title").focus();
+
+     $("#add_form").submit(function(){
+         if ($(".add_title").val() == '') {
+             alert("请填写标题");
+             return false;
+         }
+         return true;
+     });
+  	$("#dialogRepeat").dialog({
+        autoOpen: false,
+        width: 500,
+        buttons:{
+       "确定":function(){
+ 		 if($("#frequency").val()>=1&&weekdays!=''){ 		 	 		
+  			days=weekdays.substr(1);
+  			repeatType=$("#repeatType").val();
+ 		    frequency=$("#frequency").val();		
+  	        editRepeat='true';
+
+    	    var repeat_info_days=days.split(',');
+            repeat_info_days=repeat_info_days.sort();
+            $("#repeat_info").html(' '+'<span>每'+frequency+'周</span>'+':');
+            for(var x in repeat_info_days){
+            $("#repeat_info").append('星期'+repeat_info_days[x]+' ');}
+  	       }else{
+  	    	   editRepeat='false';
+  		       }
+        $(this).dialog("close");
+	       },
+       "取消":function(){
+	        editRepeat='false';
+        $(this).dialog("close");
+           }
+        }
+		});
+	$("#repeat").click(function(){
+        $("#dialogRepeat").dialog("open");
+		});
+	$("#repeatType").change(function(){
+		repeatTypeChange();
+		});
+
+	$(":checkbox").live('click',function(){
+		if($(this).attr("checked")==true){weekdays=weekdays+','+$(this).attr("value");}
+		else{
+			var str;
+			str=','+$(this).val();
+			weekdays=weekdays.replace(new RegExp(str,"g"),"");
+			}
+		});
+     function boxChange(){
+    	 if($("#box").val()=="schedule"){
+			 $("#exeDate").show();
+			 $( "#exeDate" ).val(today.getFullYear()+"-"+addZero(today.getMonth()+1)+"-"+addZero((today.getDate()+1)));
+			 }else{
+				 $("#exeDate").hide();
+			 }
+         }
+  	function repeatTypeChange(){
+		var content;
+		if($("#repeatType").val()=='weekly'){
+         content='<p>重复频率：每<input id="frequency" name="frequency" type="text" size="3" value="1"></input>周</p>'
+        + '<p>重复日：<input type="checkbox" id="weekday_1"value="1">周一</input>&nbsp;<input type="checkbox" id="weekday_2"value="2">周二</input>&nbsp;<input type="checkbox" id="weekday_3"value="3">周三</input>&nbsp;<input type="checkbox" id="weekday_4"value="4">周四</input>&nbsp;<input type="checkbox"id="weekday_5" value="5">周五</input>&nbsp;<input type="checkbox" id="weekday_6"value="6">周六</input>&nbsp;<input type="checkbox" id="weekday_7"value="7">周日</input>&nbsp;</p>';
+          }
+      else{
+          content='暂不支持';
+          }
+      $("#repeatDetail").html(content);
+      $("#frequency").change(function(){
+          $("#frequency").val(parseInt($("#frequency").val()));
+      });     
+	}
+     function addZero(s){
+         return ("00"+s).substr((s+"").length);
+   	   }
+});
+
+
+</script>

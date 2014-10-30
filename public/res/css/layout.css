@@ -1,0 +1,54 @@
+body {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+}
+
+li {
+list-style-image:none;
+list-style-position:outside;
+list-style-type:none;
+}
+
+
+#header {
+	position: absolute;
+	border: #CCC solid 1px;
+	height: 38px;
+	left: 0;
+	right: 0;
+	top: 0;
+}
+
+#focus-panel {
+	position: absolute;
+	width: 240px;
+	bottom: 0;
+	left: 0;
+	top: 38px;
+	background: none repeat scroll 0 0 #DFE2E9;
+	border-left: 1px solid #525F74;
+	border-right: 1px solid #525F74;
+	overflow:auto;
+}
+
+#content {
+	position: absolute;
+	top: 38px;
+	left: 242px;
+	bottom: 60px;
+	right: 0;
+	overflow:auto;
+}
+
+#toolbar {
+	position: absolute;
+	left: 242px;
+	bottom: 0px;
+	right: 0;
+	height: 60px;
+	background-color: #ccc;
+}

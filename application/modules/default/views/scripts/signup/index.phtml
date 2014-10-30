@@ -1,0 +1,86 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="/res/js/libs/jquery-1.4.4.min.js"></script>
+<script type="text/javascript" src="/res/js/libs/jquery.validate-1.7.js"></script>
+<script type="text/javascript">
+	jQuery.validator.addMethod("byterangelength", function(value, element, param) {
+	    var length = value.length;
+	    for(var i = 0; i < value.length; i++){
+	       if(value.charCodeAt(i) > 127)
+	       length++;
+	    }
+	    return this.optional(element) || ( length >= param[0] && length <= param[1] );
+	}, "请确保输入的值在6-15个字符之间(一个中文字算2个字符)");
+	
+	
+	jQuery.validator.addMethod("username", function(value, element) {
+	 return this.optional(element) || /^([\u4E00-\uFA29]|[\uE7C7-\uE7F3]|[a-zA-Z0-9_])*$/i.test(value);
+	}, "用户名含有非法字符!"); 
+    $(function(){
+		var validator = $("#signupForm").validate({
+			rules: {
+			username: {
+				required: true,
+				byterangelength: [4,20],
+				username: true,
+				remote: "/default/provider/checkusername"
+			},
+			password: {
+				required: true,
+				rangelength: [5,16]
+			},
+			repassword: {
+				required: true,
+				equalTo: "#password_field"
+			},
+			vs: {
+				alphanumeric: true,
+				rangelength: [3,16]
+			},
+			email: {
+				email: true,
+				rangelength: [4,128],
+				remote: "/provider/checkemail"
+			}
+		},
+		messages: {
+			username: {
+				required: "请输入用户名",
+				byterangelength: jQuery.format("有效的用户名为{0}-{1}个字符"),
+				username: "用户名中含有非法字符",
+				remote: "该用户名已存在!"
+			},
+			password: {
+				required: "请输入密码",
+				rangelength: jQuery.format("密码必需为{0}-{1}个字符")
+			},
+			repassword: {
+				required: "请再次输入密码",
+				equalTo: "两次密码输入不相符"
+			},
+			email: {
+				email: "请输入有效的电子邮件地址",
+				rangelength: "有效的电子邮件地址为{0}-{1}个字符",
+				remote: jQuery.format("该Email地址已被使用")
+			}
+		},
+		onkeyup: false
+		});
+	});
+</script>
+</head>
+<body>
+    <div style="margin:200px 0 0 600px;">
+        <form name="signupForm" id="signupForm" action="/default/signup/index" method="post">
+            <table>
+                <tr><td>用户名:</td><td><input type="text" name="username" id="username_field" /></td></tr>
+                <tr><td>密码:</td><td><input type="password" name="password" id="password_field" /></td></tr>
+                <tr><td>重复密码:</td><td><input type="password" name="repassword" id="repassword_field" /></td></tr>
+                <tr><td>Email:</td><td><input type="text" name="email" id="email_field" /></td></tr>
+                <tr><td colspan="2" align="center"><input type="submit" name="submit" value="注 册" /></td></tr>
+            </table>
+        </form>
+    </div>
+</body>
+</html>

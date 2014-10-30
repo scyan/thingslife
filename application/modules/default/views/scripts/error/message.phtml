@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <?php if (!empty($this->goto)): ?>
+  <meta http-equiv="Refresh" content="3; url=<?php echo $this->goto?>" />
+  <?php endif; ?>
+<title>提示信息 - 杭州月恒网络 - ThingsLife</title>
+<link href="/res/css/basic.css" rel="stylesheet" type="text/css" media="all" />
+
+<style type="text/css">
+<!--
+body {background-color: #E3E3E3;}
+
+#prompt {width:360px;height:auto;border:4px solid #DADADA;background-color: #F5F5F5;padding:20px;margin-left:auto;margin-right:auto;margin-top:180px;}
+.content {width:340px;height:auto;background: url(/res/images/prompt.jpg);background-repeat:no-repeat;margin-left:auto;margin-right:auto;background-position: right center;line-height:30px;margin-top:30px;margin-bottom:30px;}
+.content a {width:130px;text-decoration: none;color: #0066CC;}
+.content a:hover {width:130px;text-decoration: underline;color: #FF6600;}
+.links {margin-top: 10px;}
+.left_margin {margin-left: 15px;}
+.font01 {font-family:黑体;font-size:16px;font-weight: normal;}
+.font02 {font-family:宋体;font-size:12px;font-weight: bold;}
+-->
+</style></head>
+
+<body>
+
+<div id="prompt">
+<div class="content">
+<p class="font01"><?php echo $this->message ?></p>
+<p class="links">
+  <?php if (!empty($this->goto)): ?>
+  <a href="<?php echo $this->goto ?>">立即跳转</a>
+  <?php endif; ?>
+  <?php if ($this->showBackButton == true): ?>
+  <a href="javascript:history.back();">返回上页</a>
+  <?php endif;?>
+  <?php if ($this->showGotoHomeButton == true): ?>
+  <a class="left_margin" href="/">返回首页</a>
+  <?php endif;?>
+</p>
+</div>
+</div>
+
+</body>
+</html>

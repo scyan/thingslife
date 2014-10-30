@@ -1,0 +1,51 @@
+<?php if($this->tab=='me'):?>
+<div class="right_title">
+<input id="new-button" name="" class="buttons" type="button" value="添加" /><input id="edit-button" type="button" class="buttons" value="编辑" /><input id="delete-button"name="" class="buttons" type="button" value="删除" />
+</div>
+<script type="text/javascript">
+
+
+$(document).ready(function(){
+
+	var box="<?php echo $this->box;?>";
+	
+    if(!box){
+	    $("#today").addClass("selected");
+    } else {
+	    $("#"+box).addClass("selected");
+    }
+
+    $("#edit-button").attr("disabled", "disabled");
+    $("#delete-button").attr("disabled", "disabled");
+
+    if (box == 'done'||box=='deleted') {
+    	$("#new-button").attr("disabled", "disabled");
+    }
+
+    $("#new-button").click(function(){
+        window.location ='/task/new/box/' + box;
+    });
+
+    $("#edit-button").click(function(){
+    	   var id = $("li.selected", ".listing_box").attr('id').split("-")[1];
+    	   window.location ='/task/edit/box/' + box + '/id/' + id;
+    	
+    });
+
+    $("#delete-button").click(function(){
+    	   var id = $("li.selected", ".listing_box").attr('id').split("-")[1];
+    	   $.post("/default/task/delete",{task_id:id,box:box},function(data){
+			   $("#task-"+id).remove();
+			   if(box=='today'){
+				  countToday=Number($("#countToday").html())-1;				
+					$("#countToday").html(countToday);
+				  }
+			   $("#edit-button").attr("disabled", "disabled");
+			   $("#delete-button").attr("disabled", "disabled");	  
+		   });   		
+    });  
+});
+</script>
+<?php else:?>
+<div class="process"></div>
+<?php endif;?>

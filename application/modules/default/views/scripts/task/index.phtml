@@ -1,0 +1,173 @@
+
+<script src="/res/js/jquery.ui.droppable.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	var currentBox="<?php echo $this->box?>";
+	var countToday;
+	var taskList='';
+	var templateList='';
+	var note='';
+	$("#countToday").val(countToday);
+	$.getJSON("/api/tasks/index",{box:currentBox},function(data){
+        if(currentBox=='schedule'){
+	        $.each(data.tasks,function(i,tasks){
+	        	taskList+='<a class="listing_title" id="taskListing_title"href="#" ><b>'+i+'</b></a>';	
+	        	taskList+='<ul class="listing_box" id="taskList">';	
+                $.each(tasks,function(i,task){ 
+                    note=(task.note=='')?'':'[Note]';    
+                    taskList+= '<li id=task-'+task._id+'><a href="#" class="row"><span class="area"><input id='+task._id+' name="mycheck" type="checkbox"/></span><b>'+task.title+'</b><b><font color="#6666CC">'+note+'</font></b></a></li>';
+                });
+                taskList+='</u>';
+	         });
+	         if(data.templates){
+		        templateList='<a class="listing_title" id="templateListing_title" href="#" ><b>每周任务</b></a>';
+	            templateList+='<ul class="listing_box" id="templateList">';
+	            $.each(data.templates,function(i,template){
+		            note=(template.note=='')?'':'[Note]'; 
+		            templateList+= '<li id=task-'+template._id+'><a href="#" class="row"><b>'+template.title+'</b><b><font color="#6666CC">'+note+'</font></b></a></li>';
+		        });
+	            templateList+='</ul>';
+		     }
+         }else{
+        	 taskList='<ul class="listing_box" id="taskList">';
+             $.each(data.tasks,function(i,task){
+        	    note=(task.note=='')?'':'[Note]'; 
+        	    var checkBox=(currentBox=='done'||currentBox=='deleted')?'':'<input id='+task._id+' name="mycheck" type="checkbox"/>';
+        	    var today=new Date();
+        	    
+        	    today=today.getFullYear()+'-'+addZero((today.getMonth() + 1))+'-'+addZero(today.getDate());
+        	    var due=(today!=task.exeDate&&currentBox=='today')?'【已过期】':'';       	   
+        	    taskList+='<li id=task-'+task._id+'><a href="#" class="row"><span class="area">'+checkBox+'</span><font color="#FF0000">'+due+'</font><b>'+task.title+'</b><b><font color="#6666CC">'+note+'</font></b></a></li>';     
+            });
+            taskList+='</u>';
+         }
+        $(".listing").html(taskList);
+        $(".listing").append(templateList);
+
+    	$( "li", "#taskList" ).draggable({ 
+    		revert: "invalid",
+    		helper: "clone",
+    		appendTo: "body",
+    		drag: function(event, ui) { 
+    		drag_id=$(this).attr("id");
+    		 }	
+    	});
+        
+	});
+	if(currentBox=='done'||currentBox=='deleted'){
+		$(":checkbox").hide();
+		}
+	$(":checkbox").live('click',function(){
+		 var id=$(this).attr("id");		 
+		  $.post("/default/task/done", { id: id } ,function(data){
+			  $("#task-"+id).remove();
+			  if(currentBox=='today'){
+				  countToday=Number($("#countToday").html())-1;			
+					$("#countToday").html(countToday);
+				  }
+			  if(!$("li.selected", ".listing_box").attr('id')){
+				  $("#edit-button").attr("disabled", "disabled");
+				    $("#delete-button").attr("disabled", "disabled");
+				 }		  
+			  });
+		});
+
+	$("li",".listing_box").live('dblclick',function(){
+		window.location.href="/task/edit/box/"+currentBox+"/id/"+taskid;
+		});
+
+	var exeDate;
+	var box;
+	var drag_id;
+
+	$( "#dialogDate" ).dialog({
+		buttons: {
+		"确定": function() {		
+		if(currentBox=='today'){
+			countToday=Number($("#countToday").html())-1;			
+			$("#countToday").html(countToday);
+			}
+		exeDate=$("#dialogDate").attr("value");	
+    	$.post("/default/task/drag",{exeDate:exeDate,task_id:drag_id,box:box,currentBox:currentBox},function(data){
+    		$("#task-"+drag_id).remove();
+   		 if(!$("li.selected", ".listing_box").attr('id')){
+			  $("#edit-button").attr("disabled", "disabled");
+			    $("#delete-button").attr("disabled", "disabled");
+			 }		  
+		  });
+    	$( this ).dialog( "close" );
+    	
+		},
+		"取消": function() {
+			$( this ).dialog( "close" );
+		}
+	},
+		autoOpen: false
+	});
+	$( "#dialogDate" ).datepicker({
+		
+		dateFormat: 'yy-mm-dd',
+		monthNames: ['一月','二月','三月','四月','五月','六月',
+			 			'七月','八月','九月','十月','十一月','十二月'], // Names of months for drop-down and formatting			 		
+        dayNamesMin: ['日','一','二','三','四','五','六'], 
+		minDate: 1
+	});
+    
+	$("li",".listing_box").live('click',function(){
+		$("li",".listing_box").removeClass("selected");
+		  $(this).addClass("selected");
+		  var id=$(this).attr("id");
+		  id=id.split("-");
+		  taskid=id[1];       
+		  $("#edit-button").removeAttr("disabled"); 
+		  $("#delete-button").removeAttr("disabled"); 
+		});
+	$(".navi").click(function(){
+		$(".selected","navi").removeClass("selected");
+		$(this).addClass("selected");
+		
+		});  
+
+	
+	$( "li",".navi" ).droppable({
+			//accept: ".listing_box> li",
+			hoverClass: "hover",
+			drop: function( event, ui ) {    
+		     box=$(this).attr("id");
+		    drag_id=drag_id.split("-");
+		    drag_id=drag_id[1];
+		    if(currentBox!=box){
+		      if(currentBox!='schedule'&&box=='schedule'){
+		    	$( "#dialogDate" ).dialog( "open" );
+		        $("#dialogDate").change(function(){		        		        	
+		        });
+			  }else{
+				  if(currentBox!='today'&&box=='today'){
+					countToday=Number($("#countToday").html())+1;				
+					$("#countToday").html(countToday);		
+				    }
+				  else if(currentBox=='today'&&box!='today'&&box!='schedule'){
+					countToday=Number($("#countToday").html())-1;				
+					$("#countToday").html(countToday);
+					}
+			
+					$.post("/default/task/drag",{exeDate:0,task_id:drag_id,box:box,currentBox:currentBox},function(data){
+						  $("#task-"+drag_id).remove();	
+						  if(!$("li.selected", ".listing_box").attr('id')){
+							  $("#edit-button").attr("disabled", "disabled");
+							    $("#delete-button").attr("disabled", "disabled");
+							 }	  
+					  });
+				}
+		    }
+			}
+		});	
+	 function addZero(s){
+         return ("00"+s).substr((s+"").length);
+   	   }
+});
+</script>
+<div id="dialogDate" title="Date"></div>
+<div class="listing">
+
+</div>
