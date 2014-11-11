@@ -1,9 +1,9 @@
 <?php
 return array(
     '_default' => array(
-        'dns' => 'mysql:host=127.0.0.1;dbname=thingstest' , 
-        'username' => 'thingslifeuser' , 
-        'password' => 'jhh3267gbfcw'
+        'dns' => 'mysql:host=127.0.0.1;dbname=thingslife' , 
+        'username' => 'root' , 
+        'password' => '89scyanyao'
     ) , 
     'user' => array(
         'use' => '_default'
