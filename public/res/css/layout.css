@@ -13,7 +13,28 @@ list-style-position:outside;
 list-style-type:none;
 }
 
-
+.auth-body{
+	background-color:#b8bcc5;
+}
+.auth-form{
+	font-size:12px;
+	background-color: #dee4ea;
+	opacity: 0.5;
+	margin: auto;
+	padding: 20px;
+	width: 228px;
+	border: solid 1px #fff;
+	margin-top:15%;
+}
+.auth-form tr{height:25px;}
+.auth-form td{text-align:right;}
+.auth-form input[type="submit"]{
+	background: #ffcf00;
+	padding: 2px 5px;
+	border: solid 2px #fff;
+	cursor: pointer;
+}
+.auth-form label{display:block;color:#f00;}
 #header {
 	position: absolute;
 	border: #CCC solid 1px;
