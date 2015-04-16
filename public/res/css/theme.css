@@ -124,8 +124,14 @@ body {
 	padding: 2px 5px 0px 30px;
 	height: 24px;
 	line-height: 24px;
+border-bottom:solid 1px transparent;
 }
-
+.focus-bundle ul li a{
+	display:block;
+	overflow:hidden;
+	text-decoration:none;
+	color: #000;
+}
 .focus-bundle ul li:hover {
 	background: #CCD5E6;
 }
@@ -136,10 +142,6 @@ body {
 	background: -webkit-gradient(linear, 0 0, 0 100%, from(#AFBDD8), to(#8496BA));
 }
 
-.focus-bundle ul li a {
-	text-decoration:none;
-	color: #000;
-}
 
 .focus-bundle .focus-name {
 	background: transparent url(../images/focus-icon.png) no-repeat scroll 0px 0px;
@@ -238,7 +240,17 @@ body {
 ul.task-list {
 	margin: 10px 8px;
 }
+.things-draggable{
+	cursor:move;
+}
 
+[node-type=taskItem] .checkbox{
+	cursor:default;
+}
+.droppable-hover{
+background-color: rgba(252,228,199,.5) !important;
+border-bottom: solid 1px #fdca4f !important;
+}
 ul.task-list li {
 	color: #666;
 	font-size: 12px;
@@ -268,10 +280,10 @@ ul.task-list li.selected {
 	background: -webkit-gradient(linear, 0 0, 0 100%, from(#E0EDFC), to(#D3E0EF));
 }
 
-ul.task-list li.done-selected {
-	background-color: #DCE8F8;
+ul.task-list li.done.selected {
+	background: #DCE8F8;
 	filter:alpha(opacity=70);
-	background-color:rgba(220,232,248,.7);
+	background:rgba(220,232,248,.7);
 	border-bottom: 1px solid #BDBEBF;
 }
 
@@ -291,7 +303,8 @@ ul.inactive-list li.selected {
 
 
 .task-list .progress-bar {
-	position: absolute;
+	/* position: absolute; */
+	float:left;
 	background-color: #CEDEED;
 	background: -moz-linear-gradient(top, #CEDEED, #BAD0E5);
 	background: -webkit-gradient(linear, 0 0, 0 100%, from(#CEDEED), to(#BAD0E5));
@@ -310,7 +323,8 @@ ul.inactive-list li.selected {
 }
 
 .task-list .progress {
-	position: absolute;
+	/* position: absolute; */
+float:left;
 	display: block;
 	background-color: #B6D4EB;
 	background: -moz-linear-gradient(top, #B6D4EB, #97BDD9);
@@ -383,7 +397,7 @@ ul.inactive-list li.selected {
 	margin-left: 10px;
 }
 .task-list .project .title {
-	margin-left: 110px;
+	/* margin-left: 110px; */
 }
 /* title } */
 
@@ -461,7 +475,9 @@ ul.inactive-list li.selected {
 	font-size: 12PX;
 }
 
-
+.tag-bar img{
+	cursor: pointer;
+}
 .project-info .title-bar, .project-info .duedate-bar, .project-info .notes-bar , .project-info .sound-bar, .project-info .tag-bar{
     position: relative;
 	background-color: #F6F5F6;
@@ -501,13 +517,13 @@ ul.inactive-list li.selected {
 	text-indent: -9999px;
 	background: transparent url(../images/task-icon.png) no-repeat scroll 0px -180px;
 }
-.project-info .today .checkbox {
+.project-info.today .checkbox {
 	background-position: 0px -200px;
 }
-.project-info .due .checkbox {
+.project-info.due .checkbox {
 	background-position: 0px -220px;
 }
-.project-info .done .checkbox {
+.project-info.done .checkbox {
 	background-position: 0px -242px;
 }
 
@@ -558,7 +574,7 @@ ul.inactive-list li.selected {
 	width: 12px;
 	height: 20px;
 }
-.project-info .clear-tag {
+/* .project-info */ .clear-tag {
 	display:inline-block;
 	background: transparent url(../images/task-icon.png) no-repeat scroll 0px -375px;
 	text-indent: -9999px;
@@ -736,7 +752,7 @@ ul.inactive-list li.selected {
 }
 
 .hidden{
-	display : none;
+	display : none ;
 }
 
 /**
@@ -769,6 +785,7 @@ ul.inactive-list li.selected {
 
 .task-form .row {
 	margin: 5px 0;
+	overflow:hidden;
 }
 
 .task-form .buttons-row {
@@ -865,3 +882,46 @@ ul.inactive-list li.selected {
 	background:#00C;}
 .purple{
 	background:#609;}
+.edit-dialog-icons{
+	background:url(../images/edit-dialog-icons2.png) 0 0 no-repeat;
+}
+.edit-dialog-icons.set-tag{
+	width:20px;
+	height:20px;
+	display:inline-block;
+}
+/* .edit-dialog-icons.clear-tag{
+	width:13px;
+	height:13px;
+	display:none;
+	background-position:0 -85px;
+	position:absolute;
+	right:0;
+top: 50%;
+margin-top: -7px;
+} */
+.hover-bar{
+	display:inline-block;
+	position: relative;
+	
+	padding: 3px 15px 3px 3px;
+}
+.hover-bar:hover{background: #AFBDD8;}
+.hover-bar:hover .clear-tag{
+	display:inline-block;
+
+}
+
+.edit-dialog-icons.due-date{
+	width:25px;
+	height:25px;
+	display:inline-block;
+	background-position:0 -40px;
+	float:left;
+}
+.edit-dialog-icons.record{
+	width:28px;
+	height:21px;
+	display:inline-block;
+	background-position:0 -121px;
+}

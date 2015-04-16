@@ -1,0 +1,15 @@
+<div class="list-block someday-list">
+	<ul class="task-list inactive-list">
+		<?php echo $this->partial('me/tasklist.phtml','default',array('focusField'=>$this->focusField,'list'=>$this->list))?>
+	</ul>
+</div>
+<div class="list-block subTask-list">
+	<?php foreach($this->projectList as $key=>$value):?>
+		<div>
+			<div id="project-<?php echo $key?>" class="group-title project-title" ><?php echo $value['info']['title']?></div>
+			<ul class="task-list active-list">
+				<?php echo $this->partial('me/tasklist.phtml','default',array('focusField'=>$this->focusField,'list'=>$value['list']))?>
+			</ul>
+		</div>
+	<?php endforeach;?>
+</div>

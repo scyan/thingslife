@@ -24,7 +24,14 @@ abstract class Api_BaseController extends BaseController {
     protected function setEmptyListJsonData() {
     	$this->jsonData = array();
     }
-    
+    protected function setSuccess($data=array()){
+        $this->jsonData=array('code'=>'10000','data'=>$data);
+        return ;
+    }
+    protected function setError($msg=''){
+        $this->jsonData=array('code'=>'10001','msg'=>$msg);
+        return ;
+    }
     public function postDispatch() {
     	parent::postDispatch();
     	echo json_encode($this->jsonData);

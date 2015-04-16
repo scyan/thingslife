@@ -46,4 +46,49 @@ class ArrayUtil {
     	}
     	return $result;
     }
+    
+    
+     public static function path($array, $path, $default = NULL) {
+         if (array_key_exists($path, $array)) {
+         	return $array[$path];
+         }
+         
+         $delimiter = ".";
+         //$path = trim($path, "{$delimiter}* ");
+         $keys = explode($delimiter, $path);
+         do {
+         	$key = array_shift($keys);
+         
+         	if (isset($array[$key])) {
+         		if ($keys) {
+         			if (is_array($array[$key])) {
+         				$array = $array[$key];
+         			} else {
+         				break;
+         			}
+         		} else {
+         			return $array[$key];
+         		}
+         	} elseif ($key === '*') {
+         		$values = array();
+         		$inner_path = implode($delimiter, $keys);
+         		foreach ($array as $arr) {
+         			$value = is_array($arr) ? self::path($arr, $inner_path) : $arr;
+         			if ($value) {
+         				$values[] = $value;
+         			}
+         		}
+         
+         		if ($values) {
+         			return $values;
+         		} else {
+         			break;
+         		}
+         	} else {
+         		break;
+         	}
+         } while ($keys);
+         
+         return $default;
+     }
 }

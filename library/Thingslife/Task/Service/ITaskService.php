@@ -9,33 +9,31 @@ interface ITaskService {
 	
 	public function update(array $fields, $id);
 	
-	public function delete($taskId);
 	
 	public function load($id);
 	
-	public function archive($focusType, $userId);//归档
+	//public function archive($focusType, $userId);//归档
+	public function archive(array $conditions);//归档2.0
 	
-	public function countItems($taskId,$focusType=null,$due=false);//计算project子任务条数
+//	public function countItems($taskId,$focusType=null,$due=false);//计算project子任务条数
 	
-	public function countToday($userId);//计算今日任务条数，可根据条件计算已过期的和未过期的
 	
-	public function countInbox($userId);//计算收集箱任务条数，可根据条件计算已过期的和未过期的
 	
-	public function listToday($userId);//选出所有今日任务
+	public function listToday(array $conditions);//选出所有今日任务
 	
-	public function listNext($userId);
+	public function listNext(array $conditions);
 	
-	public function listProject($userId);
+	public function listProject(array $conditions);
 	
-	public function listSchedule($userId);
+	public function listSchedule(array $conditions);
 	
-	public function listInbox($userId);
+	public function listInbox(array $conditions);
 	
-	public function listSomeday($userId);
+	public function listSomeday(array $conditions);
 	
-	public function listDeleted($userId);
+	public function listDeleted(array $conditions);
 	
-	public function listArchived($userId,$offset,$limit);
+	public function listArchived(array $conditions,$offset=0,$limit=null);
 	
 	public function listMultitasks($userId, $offset, $limit);
 	
@@ -47,23 +45,16 @@ interface ITaskService {
 	
 	public function loadComment($id);//载入评论
 	
-	public function addTag($taskId,$data);//添加标签
 	
-	public function deleteTagByTaskId($taskId);//删除标签
 	
-	public function updateTagByTaskId($taskId,$data);//更新标签
 	
-	public function addSound($taskId,$file);//添加声音
 	
-	public function updateSoundByTaskId($taskId,$file);//更新声音
-	
-	public function deleteSoundByTaskId($taskId);//删除声音
 	
 	public function countCommentsByTaskId($taskId);//统计一个任务的评论数目
 	
-	public function moveToFocusType($focusType, $taskId);//移动任务到某个箱子
+	public function moveToFocusType($focusType, &$task);//移动任务到某个箱子
 	
-	public function moveChildren($taskId, $focusType) ;//移动某个project的子任务到某个箱子
+	//public function moveChildren($taskId, $focusType) ;//移动某个project的子任务到某个箱子
 	
 	public function addRepeat(array $fields);//往重复信息表中添加一条记录
 	
@@ -77,9 +68,9 @@ interface ITaskService {
 	
 	public function getNext($days,$frequency,$start);//根据重复的日子和频率计算下一次
 	
-	public function createTaskFromRepeat($today);//用于脚本，根据重复信息在今日待办中新建一条任务
+	public function createTaskFromRepeat();//用于脚本，根据重复信息在今日待办中新建一条任务
 	
-	public function moveToToday($today);//用于脚本，将日程中日期为今天的任务移动到今日待办中
+	public function moveToToday();//用于脚本，将日程中日期为今天的任务移动到今日待办中
 	
 /*	public function listByUserIdAndDone($userId, $done, $offset = 0, $limit = 30);
 	

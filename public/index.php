@@ -15,6 +15,33 @@ set_include_path(implode(PATH_SEPARATOR, array(
     get_include_path()
 )));
 
+/*自动加载*/
+define("DS", DIRECTORY_SEPARATOR);
+$base_path = rtrim(dirname((dirname(__FILE__))), DS);
+define('TOOLPATH', $base_path . DS . 'library'.DS.'Juzi'.DS.'Util');
+function auto_load($class) {
+	/*
+	 for security concerns, we should check the illegal chars.
+	the reason of using trim instead of preg_match('/^\w$/iD', $class), is that
+	even a trim(a_big_charlist) is a bit faster(~10%) than preg_match('\w')
+	*/
+	if (trim($class, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz1234567890')) {
+		return false;
+	}
+	$file = str_replace('_', '/', strtolower($class));
+
+
+	$path = TOOLPATH . DIRECTORY_SEPARATOR . $file . '.php';
+	if(file_exists($path)){
+		require $path;
+	}
+	//最后再检查一次类是否已经正确加载，如果为false,说明类名与swift的加载规则不兼容，需要返回false以使后续程序能够正确处理。
+	return class_exists($class, false);
+	//smarty还定义了一个auto load方法，不能就此打住
+}
+
+spl_autoload_register('auto_load');
+/** 自动加载*/
 
 /** Zend_Application */
 

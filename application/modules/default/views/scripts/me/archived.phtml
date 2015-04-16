@@ -1,0 +1,10 @@
+<div class="list-block archived-list">
+	<?php foreach($this->lists as $key=>$list):?>
+		<div>
+			<div class="group-title"><?php echo substr($key,0,10);?></div>
+			<ul class="task-list inactive-list">
+				<?php echo $this->partial('me/tasklist.phtml','default',array('focusField'=>$this->focusField,'list'=>$list))?>
+			</ul>
+		</div>
+	<?php endforeach;?>
+</div>

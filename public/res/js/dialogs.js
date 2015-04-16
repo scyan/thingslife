@@ -57,7 +57,8 @@ var DateDialog = {
         
         $('#dueDate-ensure').live('click',function(){
     		$('#dueDate-info').html($root.val());
-			  $root.dialog('close');
+    		Dispacher.notify('dueDateField.change');
+			$root.dialog('close');
         });
         $('#dueDate-cancel').live('click',function(){
         	$root.dialog('close');
@@ -114,8 +115,17 @@ var NewEditDialog = {
 			height : 320,
             autoOpen : false
 		});
+	  Dispacher.connect('dueDateField.change',function(event,args){
+		  if($('#dueDate-info').text()==''){
+			  $('.dueDate-bar').hide();
+		  }else{
+			  $('.dueDate-bar').show();
+		  }
+	  });
     },
-    
+    render:function(){
+    	
+    },
     /**
 	 * @access public
 	 */
@@ -143,7 +153,7 @@ var NewEditDialog = {
 				  $('#note-field').val(data.task.note);
 				  (getCurrentTask().isSchedule())?$('#date-field').show():$('#date-field').hide();
 				  if(data.task.tag>0){
-					  $('#tag-field').attr('src','/res/tags/'+data.tag.name+'?i='+Math.random());
+					  $('#tag-field').attr('src',data.tag.name+'?i='+Math.random());
 				  }
 				  if(data.task.sound>0){
 					  $('#player').attr('src','/res/upload/sound_'+data.task._id+'.wav?i='+Math.random());
@@ -153,6 +163,7 @@ var NewEditDialog = {
 				  
 				  (data.task.exeDate==0)?$('#date-field').val(TimeMachine.tomorrow('Y-m-d')):$('#date-field').val(TimeMachine.custom(data.task.exeDate*1000));
 				  (data.task.dueDate!=0)?$('#dueDate-info').html(TimeMachine.custom(data.task.dueDate*1000)):'';
+				  Dispacher.notify('dueDateField.change');
 				  (data.task.repeatId==0)?$('#belongto').show():$('#belongto').hide();
 				  if (data.repeat) {
 					Repeat.set(data.repeat);
@@ -173,6 +184,7 @@ var NewEditDialog = {
 		$('#note-field').val('');
 		$('#repeat-info').empty();
 		$('#dueDate-info').empty();
+		Dispacher.notify('dueDateField.change');
 		$('#sound').val('');
 		$('#player').hide();
 		$('#player').attr('src','');
@@ -233,9 +245,9 @@ var NewEditDialog = {
                  '</div>'+
                  '<div class="row">'+
                     '<label for="tag-field">标签</label>'+
-                    '<a href="javascript:void(0);" id="setTag">画布</a>&nbsp;&nbsp;'+
-                    '<img width="30" height="20" id="tag-field"/>'+
-                    '<a href="javascript:void(0);" id="clear-tag">删除</a>'+
+                    '<a class="edit-dialog-icons set-tag" href="javascript:void(0);" id="setTag"></a>&nbsp;&nbsp;'+
+                    '<span class="hover-bar tag-bar"><img width="30" height="20" id="tag-field"/><a  class="edit-dialog-icons clear-tag" href="javascript:void(0);" id="clear-tag"></a></span>'+
+                    ''+
                  '</div>';
     	$root.append(html);
     	$('#setTag').click(function(){
@@ -271,11 +283,9 @@ var NewEditDialog = {
 	 */
     initDueField : function($root){
     	var html='<div class="row">'+
-                   '<p>'+
-    	             '<a href="javascript:void(0)" id="due-date">过期时间</a>&nbsp;&nbsp;'+
-    	             '<span id="dueDate-info"></span>&nbsp;&nbsp;&nbsp;&nbsp;'+
-    	             '<a href="javascript:void(0);" id="clear-dueDate">清空</a>'+
-    	           '</p>'+ 
+    				'<label for="due-date-field">过期时间</label>'+
+    	             '<a class="edit-dialog-icons due-date" href="javascript:void(0)" id="due-date"></a>&nbsp;&nbsp;'+
+    	             '<span class="hover-bar dueDate-bar"><span id="dueDate-info"></span><a class="edit-dialog-icons clear-tag " href="javascript:void(0);" id="clear-dueDate"></a></span>'+
                  '</div>';
     	$root.append(html);
     	$('#due-date').click(function(){
@@ -284,12 +294,13 @@ var NewEditDialog = {
     	
     	$('#clear-dueDate').click(function(){
     		$('#dueDate-info').empty();
+    		Dispacher.notify('dueDateField.change');
     	});
     },
     initRecordField : function($root){
     	var html='<div class="row">'+
-                   '<p>'+
-                   '<a href="javascript:void(0)" id="record">录音</a>&nbsp;&nbsp;'+
+    				'<label for="due-date-field">录音</label>'+
+                   '<a  class="edit-dialog-icons record" href="javascript:void(0)" id="record"></a>&nbsp;&nbsp;'+
                    '<input id="sound" type="file" name="sound" /> '+
                     '<embed id="player" showtracker="true" enablecontextmenu="false" '+
                    'showpositioncontrols="false" showstatusbar="true" autostart="auto"' +
@@ -297,7 +308,6 @@ var NewEditDialog = {
                    'src="" '+
                    'style="width: 200px; height: 20px;">'+
                    '<input type="button" id="delete-sound" value="删除音频"/>'+
-                   '</p>'+ 
              '</object> '+
                   '</div>';
     	$root.append(html);
@@ -375,7 +385,7 @@ var NewEditDialog = {
     	$('#edit-ensure').live('click',function(){
     	    getCurrentTask().edit({
     	    	exeDate : $("#date-field").val(),
-    	    	dueDate:$('#dueDate-info').html(),
+    	    	dueDate:$('#dueDate-info').text(),
 				//dueDate:($('#dueDate-info').html()=='')?0:$('#dueDate-info').html(),
 				title : $("#title-field").val(),
 				note : $("#note-field").val(),
@@ -654,6 +664,11 @@ var CanvasDialog={
 	  			}
 	  		});
 		  Dispacher.connect('tag.change',function(event,args){
+			  if(!args.img){
+				  $('.tag-bar').hide();
+			  }else{
+				  $('.tag-bar').show();
+			  }
 			  that.settings.img=args.img;
 			  that.settings.isEdit=true;
 		  });

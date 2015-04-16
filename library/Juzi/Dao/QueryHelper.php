@@ -65,6 +65,7 @@ class QueryHelper {
 	
 	public function update($tableName, $values, $whereClause = null, $whereArgs = null) {
 		$sql = $this->_buildUpdateSql ( $tableName, $values, $whereClause );
+		
 		$stmt = $this->connection->prepare ( $sql );
 		$this->_bindParams ( $stmt, $values );
 		$this->_bindParams ( $stmt, $whereArgs, count ( $values ) );

@@ -1,9 +1,9 @@
 <?php
 return array(
     '_default' => array(
-        'dns' => 'mysql:host=127.0.0.1;dbname=thingslife' , 
-        'username' => 'root' , 
-        'password' => ''
+        'dns' => $_SERVER['DB_DNS'], 
+        'username' => $_SERVER['DB_USERNAME'] , 
+        'password' => $_SERVER['DB_PASSWORD']
     ) , 
     'user' => array(
         'use' => '_default'

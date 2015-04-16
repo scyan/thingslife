@@ -17,7 +17,7 @@ abstract class Default_BaseController extends BaseController {
     	// @todo
     }*/
     
-    private function getMessageService () {
+    public function getMessageService () {
         require_once 'Thingslife/User/Service/UserServiceFactory.php';
         return UserServiceFactory::getInstance()->createMessageService();
     }

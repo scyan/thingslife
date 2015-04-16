@@ -17,74 +17,119 @@
  * @returns {Task}
  */
 function Task(rawTask) {
+	this.isnew=false;
+	if(!rawTask){
+		this.isnew=true;
+		this.focusType=FocusField.get().focusField;
+	}
 	$.extend(this, rawTask);
-	
+	if(this.repeatId){
+		this.repeat=new RepeatClass(this.repeat);
+	}else{
+		this.repeat=new RepeatClass();
+	}
+	if(this.tagObj){
+		this.tagObj=new TagClass(this.tagObj);
+	}else{
+		this.tagObj=new TagClass();
+	}
+	if(this.parent>0||typeof this.parent==='object'){
+		this.parent=new Task(this.parent);
+	}
 	if (typeof Task._initialized == 'undefined') {
 
 		Task.prototype.show=function(callback){
-			$.getJSON('/api/tasks/edit',{taskId:this._id},function(data){
+			$.getJSON('/api/tasks/showinfo',{taskId:this._id},function(data){
 				  callback.call(this,data);
 			});
 		};
-		Task.prototype .edit=function(settings,callback){
-			var task=this;
-			$.post("/api/tasks/edit",{
-				editRepeat : Repeat.get().edit_repeat,
-				taskId : this._id,
-				done :settings.done,
-				exeDate : settings.exeDate,
-				dueDate:settings.dueDate,
-				title : settings.title,
-				note : settings.note,
-				parent : settings.parent,
-				focusField : settings.focusField,
-				repeatType : Repeat.get().type,
-				frequency : Repeat.get().frequency,
-				days : Repeat.get().days,
-				editTag:CanvasDialog.isEdit(),
-				tag:CanvasDialog.getImg()
-				
-            },function(data){
-            	if(data.task.parent!==0){
-            		data.task.parent=task.parent;
-            	}
-            	data.task.items=task.items;
-            	data.task=new Task(data.task);
-            	
-            	if(NewEditDialog.hasSound()){
-            		data.task.addSound({},function(data2){
-            			data2.sound>0?data.task.sound=data2.sound:'';
-            			 callback.call(this,data);
-            		});
+		//new-v
+		Task.prototype.showTemplate=function(callback){
+			$.get('/default/task/showtemplate',{taskId:this._id},function(data){
+				  callback.call(this,data);
+			});
+		};
+		Task.prototype.unfinish=function(callback){
+			var that=this;
+			$.getJSON('/api/tasks/undone',{taskId:this._id},function(res){
+				if(res.code='10000'){
+					Dispacher.notify('task.edit');
+					if(callback){
+						callback(that,res);
+					}
 				}else{
-					callback.call(this,data);
+					alert(res.msg);
+				}
+			});
+		};
+		Task.prototype.finish=function(callback){
+			var that=this;
+			$.getJSON('/api/tasks/done',{taskId:this._id},function(res){
+				if(res.code='10000'){
+					Dispacher.notify('task.edit');
+					if(callback){
+						callback(that,res);
+					}
+				}else{
+					alert(res.msg);
+				}
+			});
+		};
+		Task.prototype.edit=function(settings,callback){
+			var task=this;
+			if(!this._id){
+				return false;
+			}
+			settings['taskId']=this._id;
+			if(this.isSubTask()){
+				if(!this.parent.isActive){
+					var flag=confirm("进行此操作前要激活项目，确认激活项目吗？");
+					if(!flag){
+						return;
+					}
+					this.parent.edit({focusField:'next'});
+				}
+			}
+			$.post("/api/tasks/edit",settings,function(res){
+				if(res.code=='10000'){
+					
+				//	var $node=$(data);
+				//	var newTask=new Task($node.attr('action-data').toJson());
+					var newTask=null;
+					if(res.data.task){
+						newTask=new Task(res.data.task);
+					}
+					//$node.data('task',newTask);
+					Dispacher.notify('task.edit',{oldTask:task,newTask:newTask});
+					if(callback){
+						callback.call(this,res);
+					}
+					
+				}else{
+					alert(res.msg);
 				}
 			     
 			},'json');
 		};
 		Task.prototype.create=function(settings,callback){
-			$.post('/api/tasks/new',{
-				   editRepeat : Repeat.get().edit_repeat,
-				   exeDate : settings.exeDate||undefined,
-			       dueDate:settings.dueDate||undefined,
-				   title : settings.title,
-				   note : settings.note,
-				   focusField : settings.focusField,
-				   repeatType : Repeat.get().type,
-				   frequency : Repeat.get().frequency,
-				   days : Repeat.get().days,
-				   editTag:CanvasDialog.isEdit(),
-				   tag:CanvasDialog.getImg()
-			},function(data){
-				data.task.items=0;
-				data.task=new Task(data.task);
-				if(NewEditDialog.hasSound()){
-            		data.task.addSound({},function(data2){
-            			data2.sound>0?data.task.sound=data2.sound:'';
-            			callback.call(this,data);
-            		});
+			//TODO 非激活项目不可用
+			
+			$.post('/api/tasks/new',settings,function(res){
+				if(res.code=='10000'){
+					Dispacher.notify('task.create');
+					callback.call(this,res);
 				}else{
-					callback.call(this,data);
+					alert(res.msg);
+				}
+			},'json');
+		};
+		Task.prototype.createTemplate=function(settings,callback){
+			$.post('/api/tasks/newtemplate',settings,function(res){
+				if(res.code=='10000'){
+					Dispacher.notify('task.create');
+					callback.call(this,res);
+				}else{
+					alert(res.msg);
 				}
 			},'json');
 		};
@@ -155,37 +200,99 @@ function Task(rawTask) {
 		    	 });
 			return items;
 		};*/
-		Task.prototype .isInbox=function(){
+		Task.prototype.box=function(){
+			var box=[];
+			if(this.isInbox()){
+				box.push('inbox');
+			}
+		//	console.log(this.isToday);
+			if(this.isToday()){
+				box.push('today');
+			//	box.push('next');
+			}
+			if(this.isNext()){
+				box.push('next');
+			}
+			if(this.isSchedule()){
+				box.push('schedule');
+			}
+			if(this.isTemplate()){
+				box.push('schedule');
+			}
+			if(this.isSomeday()){
+				box.push('someday');
+			}
+			if(this.isProject()){
+				box.push('project');
+			}
+			if(this.isArchived()){
+				box.push('archived');
+			}
+			if(this.isDeleted()){
+				box.push('deleted');
+			}
+			if(this.isSubTask()){
+				box.push('inproject-'+this.parent._id);
+			}
+			return box;
+		};
+		Task.prototype.isInbox=function(){
+			if(this.isnew){
+				return (FocusField.get().focusField=='inbox')?true:false;
+			}
+			
 			return (this.focusType=='inbox')?true:false;
 		};
 		Task.prototype.isToday = function() {
+			if(this.isnew){
+				return (FocusField.get().focusField=='today')?true:false;
+			}
 			return(this.focusType=='today')? true: false;
 		};
 		Task.prototype.isNext = function() {
+			if(this.isnew){
+				return (FocusField.get().focusField=='next')?true:false;
+			}
 			return(this.focusType=='next')?true:false;
 		};
 		
 		Task.prototype.isSchedule = function() {
-			return (this.focusType=='schedule'&&this.repeatId==0)?true:false;
+			if(this.isnew){
+				this.exeDate=TimeMachine.tomorrow('Y-m-d');
+				return (FocusField.get().focusField=='schedule')?true:false;
+			}
+		//	return (this.focusType=='schedule'&&this.repeatId==0)?true:false;
+			return this.focusType=='schedule'?true:false;
 		};
 		
 		Task.prototype.isSomeday = function() {
+			if(this.isnew){
+				return (FocusField.get().focusField=='someday')?true:false;
+			}
 			return (this.focusType=='someday')?true:false;
 		};
 		
 		Task.prototype.isProject = function() {
-			return (this.focusLevel==1)?true:false;
+			return this.isproject;
 		};
 		
 		Task.prototype.isArchived = function() {
+			if(this.isnew){
+				return (FocusField.get().focusField=='archived')?true:false;
+			}
 			return (this.focusType=='archived')?true:false;
 		};
 		
 		Task.prototype.isDeleted = function() {
+			if(this.isnew){
+				return (FocusField.get().focusField=='deleted')?true:false;
+			}
 			return (this.focusType=='deleted')?true:false;
 		};
+		
 		Task.prototype.isSubTask=function(){
 			if(this.parent>0||typeof this.parent==='object'){
+				
 			  return true;
 			}
 			return false;
@@ -197,7 +304,7 @@ function Task(rawTask) {
 			return false;
 		};
 		Task.prototype.isActive=function(){
-			if(this.focusType=='today'||this.focusType=='next'){
+			if(this.focusType=='today'||this.focusType=='next'||this.focus=='active'){
 				return true;
 			}else{
 				return false;
@@ -215,14 +322,14 @@ function Task(rawTask) {
 				return Math.ceil((this.dueDate*1000 - TimeMachine.today())/1000/3600/24);
 		};	
 		Task.prototype.hasComments=function(){
-			if(this.comments>0){
+			if(this.comments&&this.comments>0){
 				return true;
 			}
 			return false;
 		};
 		
 		Task.prototype.hasNotes=function(){
-			if(this.note!=''){
+			if(this.note&&this.note!=''){
 				return true;
 			}
 			return false;
@@ -235,7 +342,19 @@ function Task(rawTask) {
 			return false;
 		};
 		Task.prototype.hasTag=function(){
-			if(this.tag>0){
+			if(this.tag){
+				return true;
+			}
+			return false;
+		};
+		Task.prototype.isRepeat=function(){
+			if(this.repeatId&&this.repeatId>0){
+				return true;
+			}
+			return false;
+		};
+		Task.prototype.hasDueDate=function(){
+			if(this.dueDate&&this.dueDate!=0){
 				return true;
 			}
 			return false;
@@ -317,7 +436,7 @@ function TaskUI(task) {
 			return html;
 		};
 		TaskUI.prototype.checkbox = function(){
-			return (this.focus_field=='us'||this.task.repeatId > 0) ?'': '<div class="checkbox" id="chechbox-'+this.task._id+'">[ ]</div>' ;
+			return (this.focus_field=='us'||this.task.repeatId > 0) ?'': '<div class="checkbox" id="checkbox-'+this.task._id+'">[ ]</div>' ;
 		};
 		TaskUI.prototype.doneDate=function(){
 				return (this.task.isArchived()&&this.focus_field=='inProject')?this.task.doneDate:' ';

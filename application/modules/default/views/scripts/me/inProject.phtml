@@ -1,0 +1,81 @@
+
+<div class="project-info  <?php if($this->project['isDue']):?>due<?php endif;?> 
+		<?php if($this->project['done']=='true'):?>done<?php endif;?> " id="<?php echo $this->project['_id']?>" node-type="projectInfo" action-data='<?php echo $this->projectJson;?>'>
+	<div class="title-bar ">
+		<div class="checkbox">[ ]</div>
+		<textarea node-type="projectTitle" class="title"><?php echo $this->project['title']?></textarea>
+	</div>
+	<div class="duedate-bar">
+		<div class="duedate-flag">[D]</div>
+		<input type="text" action-type="dueDate" class="duedate" readonly="readonly" value="<?php echo $this->project['dueDate']?>"/>
+		<div class="clear-duedate" action-type="clear-dueDate">X</div>
+	</div>
+	<div class="notes-bar">
+		<div class="note-flag">[N]</div>
+		<textarea node-type="projectNote" class="notes"><?php echo $this->project['note']?></textarea>
+	</div>
+	<div class="tag-bar">
+		<div class="tag-flag">[N]</div>
+		<span class="tag" id="tag-info">
+			<?php if(isset($this->project['tagObj'])) :?><img width="30" height="20" node-type="tag-field" id="tag-project" src="<?php echo $this->project['tagObj']['path'];?>" /><a href="javascript:;" class="clear-tag" action-type="clear-tag"></a><?php endif;?>
+		</span>
+		<a href="javascript:void(0);" class="edit-dialog-icons set-tag" id="setTag"></a>
+			
+	</div>
+<!--  	<div class="sound-bar">
+		<div class="sound-flag">[N]</div>
+		<div class="sound">
+			<embed id="player-project" showtracker="true" enablecontextmenu="false"
+				showpositioncontrols="false" showstatusbar="true" autostart="auto" loop="false" volume="20"
+				type="audio/mpeg" src="" style="width: 200px; height: 20px;"
+			/>
+			&nbsp;&nbsp;
+			<div class="clear-sound">X</div>
+			&nbsp;&nbsp; <input type="button" id="record-project" value="录音" />&nbsp;&nbsp;<input
+				id="sound-project" type="file" name="sound-project"
+			/><input type="button" id="uploadsound" value="上传" />
+		</div>
+	</div>
+-->
+</div>
+<div class="list-block default-list">
+	<ul class="task-list active-list">
+		<?php echo $this->partial('me/tasklist.phtml','default',array('focusField'=>$this->focusField,'list'=>$this->defaultList))?>
+	</ul>
+</div>
+<div class="list-block scheduled-list">
+	<?php foreach($this->scheduleLists as $key=>$list):?>
+		<div>
+			<div class="group-title"><?php echo substr($key,0,10);?></div>
+			<ul class="task-list inactive-list">
+				<?php echo $this->partial('me/tasklist.phtml','default',array('focusField'=>$this->focusField,'list'=>$list))?>
+			</ul>
+		</div>
+	<?php endforeach;?>
+	</ul>
+</div>
+<div class="list-block someday-list">
+	<?php if(!empty($this->somedayList)):?>
+	<div class="group-title ">择日待办</div>
+	<?php endif;?>
+	<ul class="task-list inactive-list">
+		<?php echo $this->partial('me/tasklist.phtml','default',array('focusField'=>$this->focusField,'list'=>$this->somedayList))?>
+	</ul>
+</div>
+<div class="list-block archived-list">
+	<?php if(!empty($this->archivedList)):?>
+		<div class="group-title ">已归档</div>
+	<?php endif;?>
+	<ul class="task-list inactive-list">
+		<?php echo $this->partial('me/tasklist.phtml','default',array('focusField'=>$this->focusField,'list'=>$this->archivedList))?>
+	</ul>
+</div>
+<div class="list-block deleted-list">
+	<?php if(!empty($this->deletedList)):?>
+		<div class="group-title ">已删除</div>
+		
+	<?php endif;?>
+		<ul class="task-list inactive-list">
+		<?php echo $this->partial('me/tasklist.phtml','default',array('focusField'=>$this->focusField,'list'=>$this->deletedList))?>
+	</ul>
+</div>

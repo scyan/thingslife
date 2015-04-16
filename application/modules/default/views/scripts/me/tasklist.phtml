@@ -1,0 +1,3 @@
+<?php foreach($this->list as  $key=>$item):?>
+<?php echo $this->partial('me/task.phtml','default',array('focusField'=>$this->focusField,'item'=>$item))?>
+	<?php endforeach;?>

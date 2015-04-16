@@ -1,0 +1,45 @@
+<div class="row">
+   <label for="title-field">任务</label>
+   <input type="text" id="title-field" name="title" value=""/>
+</div>
+<div id="belongto"class="row">
+    <label for="focus-field">放入</label>
+    <select id="focus-field" name="focus">
+    <option value="inbox">收集箱</option>
+    <option value="today">今日待办</option>
+    <option value="next" >下一步行动</option>
+    <option value="schedule">日程</option>
+    <option value="someday">择日待办</option>
+    </select>
+    <input id="date-field" type="text" readonly="readonly"></input>
+ </div>
+<div class="row">
+    <label for="note-field">备注</label>
+    <textarea id="note-field" name="note"></textarea>
+</div>
+<div class="row">
+    <label for="tag-field">标签</label>
+    <a class="edit-dialog-icons set-tag" href="javascript:void(0);" id="setTag"></a>&nbsp;&nbsp;
+    <span class="hover-bar tag-bar"><img width="30" height="20" id="tag-field"/><a  class="edit-dialog-icons clear-tag" href="javascript:void(0);" id="clear-tag"></a></span>
+</div>
+<div class="row">
+    <label>重复</label>
+    <p><a href="javascript:void(0);" id="setRepeat">设置</a><span id="repeat-info"></span></p>
+</div>
+<div class="row">
+    <label for="due-date-field">过期时间</label>
+    <a class="edit-dialog-icons due-date" href="javascript:void(0)" id="due-date"></a>&nbsp;&nbsp;
+    <span class="hover-bar dueDate-bar"><span id="dueDate-info"></span><a class="edit-dialog-icons clear-tag " href="javascript:void(0);" id="clear-dueDate"></a></span>
+</div>
+<div class="row">
+    <label for="due-date-field">录音</label>
+    <a  class="edit-dialog-icons record" href="javascript:void(0)" id="record"></a>&nbsp;&nbsp;
+    <input id="sound" type="file" name="sound" /> 
+    <embed id="player" showtracker="true" enablecontextmenu="false" 
+      showpositioncontrols="false" showstatusbar="true" autostart="auto"' 
+      loop="false" volume="20" type="audio/mpeg" 
+      src="" 
+     style="width: 200px; height: 20px;">
+      <input type="button" id="delete-sound" value="删除音频"/>
+      </object> 
+</div>

@@ -1,0 +1,84 @@
+
+<div class="focus-bundle collect-bundle">
+	<h3>收集</h3>
+	<ul>
+		<li  class="<?php if($this->focusField=='inbox'):?>current<?php endif;?>" box="inbox"  action-type="changeField" action-data="focusField=inbox">
+			<a href="#focusField=inbox">
+				<div class="focus-name inbox">收集箱</div>
+				<div class="focus-counter <?php if($this->counter['inboxTodo']>0&&$this->counter['inboxDue']>0):?>two-counter<?php else:?>one-counter<?php endif;?>">
+					<span class="counter due-counter <?php if($this->counter['inboxDue']<=0):?>hidden<?php endif;?>"><?php echo $this->counter['inboxDue'];?></span><span class="counter todo-counter <?php if($this->counter['inboxTodo']<=0):?>hidden<?php endif;?>"><?php echo $this->counter['inboxTodo']?></span>
+				</div>
+			</a>
+		</li>
+	</ul>
+</div>
+
+<div class="focus-bundle workflow-bundle">
+	<h3>焦点</h3>
+	<ul>
+		<li class="<?php if($this->focusField=='today'):?>current<?php endif;?>" box="today"  id="focus-today" action-type="changeField" action-data="focusField=today">
+			<a href="#focusField=today">
+				<div class="focus-name today">今日待办</div>
+				<div class="focus-counter <?php if($this->counter['todayTodo']>0&&$this->counter['todayDue']>0):?>two-counter<?php else:?>one-counter<?php endif;?>">
+					<span class="counter due-counter <?php if($this->counter['todayDue']<=0):?>hidden<?php endif;?>"><?php echo $this->counter['todayDue']?></span><span class="counter todo-counter <?php if($this->counter['todayTodo']<=0):?>hidden<?php endif;?>"><?php echo $this->counter['todayTodo']?></span>
+				</div> 
+			</a>
+		</li>
+
+		<li class="<?php if($this->focusField=='next'):?>current<?php endif;?>" box="next" action-type="changeField" action-data="focusField=next">
+			<a href="#focusField=next">
+				<div class="focus-name next">下一步行动</div>
+			</a>
+		</li>
+
+		<li  class="<?php if($this->focusField=='schedule'):?>current<?php endif;?>" box="schedule" action-type="changeField" action-data="focusField=schedule">
+			<a href="#focusField=schedule">
+				<div class="focus-name schedule">日程</div>
+			</a>
+		</li>
+
+		<li class="<?php if($this->focusField=='someday'):?>current<?php endif;?>" current box="someday" action-type="changeField" action-data="focusField=someday">
+			<a href="#focusField=someday">
+				<div class="focus-name someday">择日待办</div>
+			</a>
+		</li>
+
+		<li  class="<?php if($this->focusField=='project'):?>current<?php endif;?>"  box="project" action-type="changeField" action-data="focusField=project">
+			<a href="#focusField=project">
+				<div class="focus-name projects">项目</div>
+			</a>
+		</li>
+
+	</ul>
+</div>
+<!-- 项目start -->
+<div class="focus-bundle projects-bundle ">
+	<h3 class="opened">
+		<span class="icon"> </span><span class="heading"></span>
+	</h3>
+	<ul>  
+        <?php foreach ($this->projects as $key=>$value):?>
+        <li class="<?php if($this->focusField=='inproject'&&$this->id==$value['_id']):?>current<?php endif;?>"  action-type="changeField" box="inproject-<?php echo $value[ "_id" ] ?>" action-data="focusField=inproject&id=<?php echo $value[ "_id" ] ?>"  class="ui-droppable" node-type="droppable">
+        	<a href="#focusField=inproject&id=<?php echo $value['_id'];?>">
+	        	<div class="focus-name project"><?php echo $value['title'];?></div>
+        	</a>
+		</li>  
+        <?php endforeach; ?>
+    </ul>
+</div>
+<!-- 项目end -->
+
+<div class="focus-bundle archive-bundle" style="margin-top: 160px">
+	<ul>
+		<li box="archived" class="<?php if($this->focusField=='archived'):?>current<?php endif;?>"  action-type="changeField" action-data="focusField=archived">
+			<a href="#focusField=archived">
+				<div class="focus-name archive">归档</div>
+			</a>
+		</li>
+		<li box="deleted" class="<?php if($this->focusField=='deleted'):?>current<?php endif;?>"  action-type="changeField" action-data="focusField=deleted">
+			<a href="#focusField=deleted">
+				<div class="focus-name trash">垃圾箱</div>
+			</a>
+		</li>
+	</ul>
+</div>

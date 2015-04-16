@@ -8,22 +8,7 @@
 <link rel="stylesheet" type="text/css" href="/res/css/theme.css" />
 <link rel="stylesheet" type="text/css" href="/res/css/ui/cupertino/jquery-ui-1.8.5.custom.css"/>
 
-<script src="/res/js/libs/jquery-1.4.4.min.js" type="text/javascript"></script>
-<script src="/res/js/libs/jquery-ui-1.8.8.min.js" type="text/javascript"></script>
-<script src="/res/js/libs/jquery.autogrow.js" type="text/javascript"></script>
 
-
-<script src="/res/js/tt.js?v=1.js" type="text/javascript"></script>
-<script src="/res/js/toppanel.js?v=1.js" type="text/javascript"></script>
-<script src="/res/js/sidebar.js?v=1.js" type="text/javascript"></script>
-<script src="/res/js/toolbar.js?v=1.js" type="text/javascript"></script>
-<script src="/res/js/taskContent.js?v=1.js" type="text/javascript"></script>
-<script src="/res/js/mainpanel.js?v=1.js" type="text/javascript"></script>
-<script src="/res/js/dialogs.js?v=1.js" type="text/javascript"></script>
-<script src="/res/js/task.js?v=1.js" type="text/javascript"></script>
-<script src="/res/js/taskList.js?v=1.js" type="text/javascript"></script>
-<script src="/res/js/swfobject.js?v=1.js" type="text/javascript"></script>
-<script src="/res/js/libs/ajaxfileupload.js?v=1.js" type="text/javascript"></script>
 <script type="text/javascript">
 /*$(function() {
 	SidebarPanel.bootstrap({
@@ -36,6 +21,9 @@
 	
 	
 });?*/
+config=[];
+config['tag_root']="<?php echo $this->tagRoot;?>";
+config['tomorrow']="<?php echo $this->tomorrow?>";
 </script>
 </head>
 <body>
@@ -43,27 +31,47 @@
 <div id="container">
   <div id="header">
     <h1>ThingsLife</h1>
-    
+    <?php echo $this->action('head', 'me')?>
   </div>
   <div id="focus-panel">
+  	<?php echo $this->action('sidebar','me')?>
   </div>
   <div id="content">
-
-  
   
     <p>END content</p>
   </div>
   
   <div id="toolbar">
-   toolbar
   </div>
   
 </div>
-<div id="date-dialog" title="日期" class="dialog hidden" style="display:none"></div>
-<div id="new-edit-dialog" class="dialog hidden task-form" title="" style="display:none"></div>
-<div id="repeat-dialog" class="dialog hidden" style="display:none"></div>
+</div>
 <div id="text-dialog" class="dialog hidden" title="消息" style="display:none"></div>
-<div id="canvas-dialog" class="dialog hidden" title="画布" style="display:none " ></div>
 <div id="Record-dialog" class="dialog hidden" title="录音" style="display:none " ></div>
+
+
 </body>
+<script src="/res/js/libs/jquery-1.7.min.js" type="text/javascript"></script>
+<script src="/res/js/libs/jquery-ui-1.8.8.min.js" type="text/javascript"></script>
+<script src="/res/js/libs/jquery.autogrow.js" type="text/javascript"></script>
+
+<script src="/res/js/tt.js?v=1.js" type="text/javascript"></script>
+<script src="/res/js/task.js?v=1.js" type="text/javascript"></script>
+<script src="/res/js/repeat.js?v=1.js" type="text/javascript"></script>
+<script src="/res/js/tag.js?v=1.js" type="text/javascript"></script>
+<script src="/res/js/template.js?v=1.js" type="text/javascript"></script>
+<script src="/res/js/dateDialog.js?v=1.js" type="text/javascript"></script>
+
+<script src="/res/js/toppanel.js?v=1.js" type="text/javascript"></script>
+<script src="/res/js/sidebar.js?v=1.js" type="text/javascript"></script>
+<script src="/res/js/toolbar.js?v=1.js" type="text/javascript"></script>
+<script src="/res/js/taskContent.js?v=1.js" type="text/javascript"></script>
+<script src="/res/js/mainpanel.js?v=1.js" type="text/javascript"></script>
+
+<script src="/res/js/editDialog.js?v=1.js" type="text/javascript"></script>
+<script src="/res/js/newDialog.js?v=1.js" type="text/javascript"></script>
+<script src="/res/js/repeatDialog.js?v=1.js" type="text/javascript"></script>
+<script src="/res/js/canvasDialog.js?v=1.js" type="text/javascript"></script>
+
+<script src="/res/js/taskList.js?v=1.js" type="text/javascript"></script>
 </html>

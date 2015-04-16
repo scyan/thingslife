@@ -1,0 +1,23 @@
+<div class="list-block default-list">
+	<ul class="task-list active-list">
+		<?php echo $this->partial('me/tasklist.phtml','default',array('focusField'=>$this->focusField,'list'=>$this->list))?>
+	</ul>
+</div>
+<div class="list-block scheduled-list">
+	<?php foreach($this->scheduleLists as $key=>$list):?>
+		<div>
+			<div class="group-title"><?php echo $key;?></div>
+			<ul class="task-list inactive-list">
+				<?php echo $this->partial('me/tasklist.phtml','default',array('focusField'=>$this->focusField,'list'=>$list))?>
+			</ul>
+		</div>
+	<?php endforeach;?>
+</div>
+<div class="list-block someday-list">
+	<?php if(!empty($this->somedayList)):?>
+		<div class="group-title">择日待办</div>
+	<?php endif;?>
+	<ul class="task-list inactive-list">
+		<?php echo $this->partial('me/tasklist.phtml','default',array('focusField'=>$this->focusField,'list'=>$this->somedayList))?>
+	</ul>
+</div>

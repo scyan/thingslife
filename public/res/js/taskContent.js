@@ -226,7 +226,7 @@ function TaskContentUI(){
 				  $('.notes','.project-info').html(data.task.note);
 				  (data.task.dueDate!=0)?$('.duedate','.project-info').val(TimeMachine.custom(data.task.dueDate*1000)):'';
 				if(data.task.tag>00){
-					$('#tag-project','.project-info').attr('src','/res/tags/tag_'+data.task._id+'.png?i='+Math.random());
+					$('#tag-project','.project-info').attr('src',config['tag_root']+'tag_'+data.task._id+'.png?i='+Math.random());
 					$('#tag-project','.project-info').show();
 					$('.clear-tag','.project-info').show();
 				}
@@ -279,10 +279,10 @@ function TaskContentUI(){
 		    		$(this).attr('width','30');
 		    		$(this).attr('height','20');
 		    	});
-			  $('.clear-tag').click(function(){
+			  $('.clear-tag','.project-info').click(function(){
 				  project.deleteTag(function(data){
-					  $('#tag-project').hide();
-					  $('.clear-tag').hide();
+					  $('#tag-project','.project-info').hide();
+					  $('.clear-tag','.project-info').hide();
 				  });
 			  });
 			  $('#canvas','.project-info').click(function(){
@@ -448,13 +448,13 @@ function TaskContentUI(){
 		  var tasks=new Array();
 	      tasks[0]=task;
 		  var flag=0;
-		  $.each($('.group-title','.subTask-list'),function(i,item){
-			  if(Number($(item).attr('id').split('-')[1])>task.parent._id){
+		  $.each($('.group-title','.subTask-list'),function(i,item){//遍历现有的group
+			  if(Number($(item).attr('id').split('-')[1])>task.parent._id){//在当前group前插入一个新group
 				  $('#task-'+task._id).remove();
 				  $(item).before(new TaskListUI(new TaskList(tasks,'subTask')).render());
 				  flag=1;
 				  return false;
-			  }else if(Number($(item).attr('id').split('-')[1])==task.parent._id){
+			  }else if(Number($(item).attr('id').split('-')[1])==task.parent._id){//在当前group中插入当前任务
 				  if($(item).next().children('#task-'+task._id).length>0){
 					  $('#task-'+task._id).replaceWith(new TaskUI(task).render());
 				  }else{

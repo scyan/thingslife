@@ -1,321 +1,160 @@
-/**
- * 
- * 使用
- * MainPanel.init({type : "me", root : "#main-panel",focus : "inbox"});
- * 
- */
-var MainPanel = {
-	settings : {
-	  type : "me",
-	/**
-	 * MainPanel的最外层容器,比如：<div id="main-panel"></div>
-	 */
-	  root : null,
-	  
-	  user_id :0,
-	  taskContentUI:new TaskContentUI(),
-	  
-	  content: ' '
-  },
-
-  init : function(options){
-	  $.extend(this.settings,options);
-	  $root=$(this.settings.root);
-	  
-	  Dispacher.connect('tasks.delete',function(event,args){
-		  MainPanel.settings.taskContentUI.removeItems(args.tasklist);
-	  });
-      Dispacher.connect('task.create', function(event,args){
-    	  var task=args.task;
-    	  if(task.focusType==FocusField.get()){
-    		  MainPanel.settings.taskContentUI.insertItem(task);
-    	  }else if(task.isToday()&&FocusField.get()=='next'){
-    		  MainPanel.settings.taskContentUI.insertItem(task);
-    	  }else if(task.isProject()){
-    		  MainPanel.settings.taskContentUI.insertItem(task);
-    	  }
-    	  if(!$.isEmptyObject(args.template)&&FocusField.get()=='schedule'){
-    		  MainPanel.settings.taskContentUI.insertItem(new Task(args.template));
-    	  }
-      });
-      Dispacher.connect('task.edit',function(event,args){
-    	  switch(FocusField.get()){
-    	     case 'today':
-    	    	 if(args.task.isToday()){
-    	    		 MainPanel.settings.taskContentUI.insertItem(args.task);
-    	    	 }else{
-    	    		 MainPanel.settings.taskContentUI.removeItem(args.task);
-    	    	 }
-    	    	 break;
-    	     case 'inbox':
-    	     case 'next':
-    	     case 'someday':
-    	     case 'archived':
-    	     case 'deleted':
-    	    	 if(args.task.focus!==FocusField.get()){
-    	    		 MainPanel.settings.taskContentUI.removeItem(args.task);
-    	    	 }else{
-    	    		 MainPanel.settings.taskContentUI.insertItem(args.task);
-    	    	 }
-    	    	 break;
-    	     case 'schedule':
-    	    	 if(args.task.focus!==FocusField.get()){
-    	    		 MainPanel.settings.taskContentUI.removeItem(args.task);
-    	    	 }else{
-    	    		 MainPanel.settings.taskContentUI.insertItem(args.task);
-    	    	 }
-    	    	 if(!$.isEmptyObject(args.template)){
-  				     MainPanel.settings.taskContentUI.insertItem(new Task(args.template));
-  			     }
-    	    	 break;
-    	     case 'project':
-    	    	 if(args.task.isDeleted()||args.task.isArchived()){
-    	    		 MainPanel.settings.taskContentUI.removeItem(args.task);
-    	    	 }else{
-    	    		 MainPanel.settings.taskContentUI.insertItem(args.task);
-    	    	 }
-    	    	 break;
-    	     case 'inProject':
-    	    	 if(args.task.isDeleted()||args.task.isInbox()){
-    	    		 MainPanel.settings.taskContentUI.removeItem(args.task);
-    	    	 }else if(!args.task.isProject()){
-    	    		 MainPanel.settings.taskContentUI.insertItem(args.task);
-    	    	 }
-    	    	 break; 
-    	     default:
-    	          break;
-    	  }
-      });
-
-      Dispacher.connect('tasks.archive',function(event,args){
-    	  if(FocusField.get()=='inProject'){
-    		MainPanel.settings.taskContentUI.insertItems(new TaskList(args.tasklist));
-  	     }else{
-  		    MainPanel.settings.taskContentUI.removeItems(args.tasklist);
-  	     }
-      });
-      
-      Dispacher.connect('field.change',function(event,args){
-    	  if(FocusField.get()==='inProject'){
-    		  MainPanel.initProjectDetail(args.project);
-    	  }else if(FocusField.get()==='inTask'){
-    		  MainPanel.initTaskDetail(args.task);
-    	  }else if(FocusField.get()==='us'){
-    		  MainPanel.initOurTaskList(args.current_page,args.user_id);
-    	  }else{
-    		  MainPanel.initMyTaskList(args.current_page);
-    	  }
-      });
-      Dispacher.connect('tag.change',function(event,args){
-    	  if(args.isProject){
-    		  args.project.addTag({data:args.img},function(data){
-    			  $('#tag-project','.project-info').show();
-    			  $('.clear-tag','.project-info').show();
-    			  $('#tag-project','.project-info').attr('src','/res/tags/tag_'+args.project._id+'.png?i='+Math.random());
-    		  });
-    	  }
-      });
-	  switch(this.settings.type){
-	    case 'us':
-		  this.initOurTaskList(1, 0);
-		  break;
-	    case 'me':
-	    default:
-		  this.initMyTaskList();
-		  break;
-	  }
-	  this.initActions($root);
-  },
-
-/*  setUser : function(user_id){
-	  this.settings.user_id=user_id;
-  },*/
-
-  initMyTaskList : function(page){
-	  var $root=$(this.settings.root);
-	  if(typeof(page)=='undefined'){
-	      var  page = 1;
-	  }
-	  $.getJSON('/api/tasks',{focusField:FocusField.get(),page:page,perPage:10},function(data){
-	    	var tasks=new Array();
-	    	$root.html(MainPanel.settings.taskContentUI.render());
-	    	$.each(data.tasks,function(i,item){
-	    		tasks.push(new Task(item));
-	    	});
-	    	MainPanel.settings.taskContentUI.insertItems(new TaskList(tasks).getParents());
-	  });
-  },
-  //TODO
-  initProjectDetail : function(project){
-	  var $root=$(this.settings.root);
-  	  $root.html(this.settings.taskContentUI.render());
-  	  
-  	  
-  	  this.settings.taskContentUI.initProjectInfo(project);
-  	  $.getJSON('/api/tasks',{focusField:'inProject',project_id:project._id},function(data){
-  		  var tasks=new Array();
-		  $.each(data.tasks,function(i,item){
-			  tasks.push(new Task(item));
-		  });
-		  MainPanel.settings.taskContentUI.insertItems(new TaskList(tasks));
-	  });
-  },
-  initOurTaskList : function(page,user_id){
-	  var $root=$(this.settings.root);
-	  $root.html(this.settings.taskContentUI.render());
-	  this.settings.user_id=user_id|| this.settings.user_id;
-	  $.getJSON('/api/Multitasks/', {
-			userId : this.settings.user_id,
-			page : page||1,
-			perPage : 10
-		}, function(data) {
-			 var tasks=new Array();
-			 $.each(data.tasks,function(i,item){
-				 tasks.push(new Task(item));
-			 });
-			 MainPanel.settings.taskContentUI.insertItems(new TaskList(tasks).getParents().getUsers());
+var mainPanel=function(){
+	var $root=$('#content');
+	var _this={};
+	_this.init=function(){
+		$('[node-type=projectInfo]').each(function(){
+			$(this).data('task',new Task($(this).attr('action-data').toJson()));
 		});
-
-  },
-  initTaskDetail : function(task){
-	 
-	  var $root=$(this.settings.root);
-	  this.settings.content=$root.html();
-	  $root.html(this.settings.taskContentUI.render());
-	  this.settings.taskContentUI.initTaskInfo(task);
-
-/*	  $('#goback').live('click',function(){
-		  var field_before=FocusField.get();
-		  FocusField.set('us');
-		  Dispacher.notify('field.change',
-				{current_page:Number($('#current-page').html()),user_id:MainPanel.settings.user_id,field_before:field_before});
-	  });*/
-  },
- 
-  initActions : function($root){
-	  $('.task-list li').live('click',function(){
-		  $('.task-list li.selected').removeClass('selected');
-		  $('.task-list li.done-selected').removeClass('done-selected');
-		  if($(this).hasClass('done')){
-		      $(this).addClass("done-selected");
-		  }else{
-			  $(this).addClass('selected');
-		  }
-		 if(FocusField.get()!=='us'){
-			  Toolbar.formatButtons();
-		  }
-	  });
-	  
-	  $('.task-list li').live('dblclick',function(){
-		  var field_before=FocusField.get();
-		  if($(this).data("task").isProject()){
-			  FocusField.set('inProject');
-			  Dispacher.notify('field.change',{project:$(this).data("task"),field_before:field_before});
-		  }
-		  else if(FocusField.get()=='us'){
-			  FocusField.set('inTask');
-			  Dispacher.notify('field.change',{task:$(this).data("task"),field_before:field_before});
-		  }
-		  else{
-		     $("#edit-task").click();
-		  }
-	  });
-	  //TODO if error
-	  $('.checkbox', '.task-list').live('click', function() {
-		    var task=$(this).parent().data("task");
-		    if(!task.isArchived()){
-		    	task.edit({done :(task.isDone())?'false':'true'},function(data){
-		    			Dispacher.notify('task.edit',{task:new Task(data.task),task_before:task});
-		    	});
-		    }
-	  });
-	  
-	  $('.comment-flag').live('click',function(){
-		  var task_id=$(this).attr('id').split('-')[1];
-		 TextDialog.open({type:'comment',task_id:task_id});
-	  });
-	  
-	  $('.progress-bar').live('click',function(){
-		  var field_before=FocusField.get();
-		  FocusField.set('inProject');
-		  Dispacher.notify('field.change',{project:$(this).parent().data('task'),field_before:field_before});
-		  //MainPanel.initProjectDetail($(this).parent().data('task'));
-	  });
-	  $('#add-comment').live('click',function(){
-		  if($('#comment').val()!==''){
-			  $.post('/api/Comments/create', {
-				  taskId : $('.task-detail').attr('id').split('-')[1],
-				  comment : $('#comment').val()
-			  }, function(data) {
-				 $.getJSON('/api/Comments/load', {
-					id : data
-				 }, function(data) {
-					$('.comment-list').prepend(new CommentUI(data).render());
-				 });
-
-			  }, 'json');
-			  $('#comment').val('');
+		if(FocusField.get().focusField=='inproject'){
+			_this.task=$('[node-type=projectInfo]',$root).data('task');
+		}
+		$('[node-type=taskItem]').each(function(){
+			$(this).data('task',new Task($(this).attr('action-data').toJson()));
+		});
+		$('.things-draggable').draggable({
+			cancel:'.checkbox',
+			 revert : "invalid", 
+			 appendTo: "body",
+			 helper : function(event){
+				$node=$(this).clone();
+				$node.data('task',$(this).data('task'));
+				var width=document.defaultView.getComputedStyle($(this).parents('ul')[0]).width;
+				$ret=$(this).parents('ul').clone().empty();
+			//	$ret.css('width',width);
+				$ret.append($node);
+				$(this).css('visibility','hidden');
+				 return $ret;
+			   },
+			   stop:function(a,b){
+				   $(this).css('visibility','visible');
+			   }
+		//	 cursorAt: { left: 10, top: 5 }
+		});
+		//过期时间设置,点击弹出日历
+		$('[action-type=dueDate]',$root).datepicker({
+			dateFormat : 'yy-mm-dd',
+			monthNames : [ '一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月' ],
+			dayNamesMin : [ '日', '一', '二', '三', '四', '五', '六' ],
+			minDate : 0
+		});
+		//tag缩放
+		$('[node-type=tag-field]',$root).toggle(function(){
+    		$(this).attr('width','200');
+    		$(this).attr('height','100');
+    	},function(){
+    		$(this).attr('width','30');
+    		$(this).attr('height','20');
+    	});
+	};
+	_this.initActions=function(){
+		Dispacher.connect('changeField',function(event,data){
+			$.get('/me/'+data.focusField,data,function(data){
+				_this.change(data);
+			});
+		});
+		Dispacher.connect('task.edit task.create task.archive task.destroy',function(event,data){
+			$.get('/me/'+FocusField.get().focusField,FocusField.get(),function(data){
+				_this.change(data);
+			});
+		});
+		
+		$root.delegate('[node-type=taskItem]','click',function(){
+			$('[node-type=taskItem]',$root).removeClass('selected');
+			$(this).addClass('selected');
+			Dispacher.notify('task.selected',$(this).data('task'));
+		});
+		$root.delegate('[node-type=taskItem]','dblclick',function(){
+			var task=$(this).data('task');
+			if(task.isArchived()||task.isDeleted()){
+				return false;
 			}
-	  });
-	  $(document).keypress(function(event){
-		  if(!NewEditDialog.isOpen()&&!DateDialog.isOpen()&&document.activeElement.type!='textarea' ){
-		      if(event.keyCode==46){   //delete
-			      $('#delete-task').click();
-		      }
-		      if(event.keyCode==38){  // up
-			     var children= $('.task-list li');
-			     if(typeof(getCurrentTask())=='undefined'){
-				      ($('.task-list li:last').hasClass('done'))?$('.task-list li:last').addClass('done-selected'):$('.task-list li:last').addClass('selected');
-			     }else{
-			          $.each(children,function(i,item){
-				          if($(item).data('task')._id==getCurrentTask()._id){
-					          if($(children[i-1]).length>0){
-					              $(item).removeClass('selected').removeClass('done-selected');
-					              ($(children[i-1]).hasClass('done'))?$(children[i-1]).addClass('done-selected'):$(children[i-1]).addClass('selected');
-					           }
-					          return false;
-			              }
-			         });
-		         } 
-		      }
-             if(event.keyCode==40){  // down
-        	     var children= $('.task-list li');
-			     if(typeof(getCurrentTask())=='undefined'){
-				     ($('.task-list li:first').hasClass('done'))?$('.task-list li:first').addClass('done-selected'):$('.task-list li:first').addClass('selected');
-			     }else{
-			         $.each(children,function(i,item){
-				         if($(item).attr('id')==$('.task-list li.selected').attr('id')||$(item).attr('id')==$('.task-list li.done-selected').attr('id')){
-					         if($(children[i+1]).length>0){
-					            $(item).removeClass('selected').removeClass('done-selected');
-					            ($(children[i+1]).hasClass('done'))?$(children[i+1]).addClass('done-selected'):$(children[i+1]).addClass('selected');
-					         }
-					         return false;
-			             }
-			         });
-		         }
-		     }
-             if(event.which==99){//C
-        	     $('.task-list li.selected').children('.checkbox').click();
-        	     $('.task-list li.done-selected').children('.checkbox').click();
-             }
-             if(event.which==32){
-        	     $('#new-task').click();
-             }
-             if(event.which==13){
-        	     $('#edit-task').click();
-             }
-             Toolbar.formatButtons();
-		  }
-          
-	  });
-
+			if(task.isProject()){
+				Dispacher.notify('changeField',{focusField:'inproject',id:task._id});
+			}else{
+				editDialog.open();
+			}
+		});
+		$root.delegate('.progress-bar','click',function(){
+			var task=$(this).parents('[node-type=taskItem]').data('task');
+			Dispacher.notify('changeField',{focusField:'inproject',id:task._id});
+		});
+		$root.delegate('.checkbox','click',function(event){
+			if($(this).parents('[node-type=taskItem]').size()>0){
+				var item=$(this).parents('[node-type=taskItem]');
+			}else if($(this).parents('[node-type=projectInfo]').size()>0){
+				var item=$(this).parents('[node-type=projectInfo]');
+			}else{
+				return;
+			}
+			var task=item.data('task');
+			if(task.isDeleted()){
+				return;
+			}
+			var that=this;
+			var e=event||window.event;
+			if(e&&e.topPropagation){
+				e.stopPropagation();
+			}else{
+				e.cancelBubble=true;
+			}
+			if(task.isDone()){
+				task.unfinish();
+			}else{
+				task.finish();
+			}
+		});
+		
+		
+		$root.delegate('[node-type=projectTitle]','blur',function(){
+			var task=$(this).parents('[node-type=projectInfo]').data('task');
+			if(task){
+				task.edit({title:$(this).val()});
+			}
+		});
+		$root.delegate('[node-type=projectNote]','blur',function(){
+			var task=$(this).parents('[node-type=projectInfo]').data('task');
+			if(task){
+				task.edit({note:$(this).val()});
+			}
+		});
+		$root.delegate('#setTag','click',function(){
+			CanvasDialog.open(mainPanel,_this.task.tagObj);
+		});
+		$root.delegate('[action-type=clear-tag]','click',function(){
+			_this.task.tagObj.set({name:''});
+			$('#tag-info',$root).hide();
+			_this.task.edit({tag:_this.task.tagObj});
+		});
+		$root.delegate('[action-type=dueDate]','change',function(){
+			_this.task.edit({dueDate:$(this).val()});
+		});
+		$root.delegate('[action-type=clear-dueDate]','click',function(){
+			$('[action-type=dueDate]',$root).val('');
+			$('[action-type=dueDate]',$root).trigger('change');
+		});
+	};
+/*	_this.checkSelect=function(){
+		if($('.selected',$root).size()>0){
+			Dispacher.notify('task.selected');
+		}
+	};*/
+	_this.change=function(html){
+		$root.html(html);
+		_this.init();
+	};
+	return {
+		init:function(){
+			_this.init();
+			_this.initActions();
+		},
+		change:function(html){
+			_this.change(html);
+		},
+		refreshTag:function(){
+		//	$('#tag-info',$root).html(template(Templates.tag_info(),_this.task));
+			_this.task.edit({'tag':_this.task.tagObj});
+		},
+	};
 	
-	  
-	 /* $('.prev').click(function(){
-		  $.getJSON('/api/tasks/',{focusField:'archived',page:})
-	  });
-	  $('.next').click(function(){});*/
-  }
-  
-};
-
+}();
+mainPanel.init();

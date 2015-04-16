@@ -1,0 +1,59 @@
+<div class="row">
+	<label for="title-field">任务</label> <input type="text" id="title-field" name="title" value="<?php echo $this->task['title'];?>" />
+</div>
+<div id="belongto" class="row">
+	<label for="focus-field">放入</label>
+	<select id="focus-field" name="focus">
+		<option <?php if($this->task['focusType']=='inbox'):?> selected="selected" <?php endif;?> value="inbox">收集箱</option>
+		<option <?php if($this->task['focusType']=='today'):?> selected="selected" <?php endif;?> value="today">今日待办</option>
+		<option <?php if($this->task['focusType']=='next'):?> selected="selected" <?php endif;?> value="next">下一步行动</option>
+		<option <?php if($this->task['focusType']=='schedule'):?> selected="selected" <?php endif;?> value="schedule">日程</option>
+		<option <?php if($this->task['focusType']=='someday'):?> selected="selected" <?php endif;?> value="someday">择日待办</option>
+	</select> 
+	<input id="date-field" type="text" readonly="readonly" value="<?php echo $this->date;?>" class="<?php if($this->task['focusType']!='schedule'):?>hidden<?php endif;?>"></input>
+</div>
+<div class="row">
+	<label for="note-field">备注</label>
+	<textarea id="note-field" name="note"><?php echo $this->task['note'];?></textarea>
+</div>
+<div class="row">
+	<label for="tag-field">标签</label>
+	 <a class="edit-dialog-icons set-tag" href="javascript:void(0);" id="setTag"></a>
+	 <span class=" tag-bar <?php if(!$this->tag):?>hidden <?php endif;?>">
+	 	<img width="30" height="20" id="tag-field" src="<?php echo $this->tag['name'].'?t='.rand();?>"/>
+	 	<a class=" clear-tag" href="javascript:void(0);"id="clear-tag"></a>
+	</span>
+</div>
+<div class="row">
+	<label>重复</label>
+	<p>
+		<a href="javascript:void(0);" id="setRepeat">设置</a>
+		<span id="repeat-info">
+			<?php if($this->repeat):?>
+				<span>每<?php echo $this->repeat['frequency'].$this->repeat['typename'];?>:</span>
+				<?php foreach ($this->repeat['daysArr'] as $value):?>
+					星期<?php echo $value;?>
+				<?php endforeach;?>
+			<?php endif;?>
+		</span>
+	</p>
+</div>
+<div class="row">
+	<label for="due-date-field">过期时间</label> 
+	<a class="edit-dialog-icons due-date" href="javascript:void(0)" id="due-date"></a> 
+	<span class=" dueDate-bar <?php if($this->task['dueDate']==0):?>hidden<?php endif;?>">
+		<span id="dueDate-info"></span>
+		<a class=" clear-tag " href="javascript:void(0);"id="clear-dueDate"></a>
+	</span>
+</div>
+<!--  <div class="row">
+	<label for="due-date-field">录音</label> 
+	<a class="edit-dialog-icons record" href="javascript:void(0)" id="record"></a>&nbsp;&nbsp;
+	<input id="sound" type="file" name="sound" />
+	<embed id="player" showtracker="true" enablecontextmenu="false"
+		showpositioncontrols="false" showstatusbar="true" autostart="auto"
+      loop="false" volume="20" type="audio/mpeg" src=""
+		style="width: 200px; height: 20px;"/>
+	
+	<input type="button" id="delete-sound" value="删除音频" />
+</div>-->

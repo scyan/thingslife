@@ -95,5 +95,106 @@ class BaseController extends Zend_Controller_Action {
         return UserServiceFactory::getInstance()->createUserService();
     }
     
+    
+    protected function filter($keys,$value){
+    	require_once 'Juzi/Util/ArrayUtil.php';
+    	$value = ArrayUtil::filterKeys($keys, $value);
+    	return $value;
+    }
+    protected function setDueInfo(&$value){
+    	if($value['dueDate']){
+    		$dueDays=ceil((strtotime($value['dueDate'])-time())/3600/24);
+    		$value['isDue']=$dueDays<=0?true:false;
+    		if($dueDays>0){
+    			$value['dueInfo']='剩余'.$dueDays.'天';
+    		}else if($dueDays==0){
+    			$value['dueInfo']='今天到期';
+    		}else{
+    			$value['dueInfo']='已过期'.abs($dueDays).'天';
+    		}
+    	}else{
+    		$value['isDue']=false;
+    	}
+    }
+    //设置是否活动
+    protected  function setStatus(&$value){
+    	if($value['focusType']=='today'||$value['focusType']=='next'){
+    		$value['isActive']=true;
+    	}else{
+    		$value['isActive']=false;
+    	}
+    	 
+    }
+    //设置项目信息
+    protected function setProjectInfo(&$value){
+    	$value['isproject']=$value['focusLevel']==1?true:false;
+    	$value=array_merge($value,$this->getTaskService()->countChildren($value['_id']));
+   /*  	if( $value['isproject']){
+    		$value['items']=$this->getTaskService()->countItems($value['_id']);
+    		$value['dueItems']=$this->getTaskService()->countItems($value['_id'], null, 'due');
+    		$value['doneItems']=$this->getTaskService()->countItems($value['_id'], null, 'done');
+    	} */
+    }
+    //设置重复信息
+    protected function setRepeatInfo(&$value){
+    	if($value['repeatId']){
+    		$value['repeat']=$this->getTaskService()->loadRepeat($value['repeatId']);
+    	}
+    }
+   	protected function setDoneInfo(&$value){
+   		if($value['done']=='true'){
+   		   // $value['doneTime']=date('Y-m-d',$value['doneTime']);
+   		}
+   	}
+   	protected function setTag(&$value){
+   	    if(isset($value['tag'])&&$value['tag']){
+   	    	$tag=array();
+   	    	$tag['name']=$value['tag'];
+   	    	$tag['path']=Config::get('files.tag_root').$value['tag'];
+   	        $value['tagObj']=$tag;
+   	    }
+   	}
+   	protected function filterInactive(&$value,&$parents){
+   	    if(!empty($value['parent'])){
+   	    	if(!isset($parents[$value['parent']])){
+   	    		$parents[$value['parent']]=$this->getTaskService()->load($value['parent']);
+   	    		if($parents[$value['parent']]['focus']!='next'){
+   	    			return false;
+   	    		}
+   	    	}
+   	   // 	$value['parent']=$this->filter(array('_id','title'),$parents[$value['parent']]);
+   	    }
+   	    return true;
+   		
+   	}
+    protected  $filterKeys=array(
+    		'exeDate',
+    		'dueDate',
+        	'doneTime',
+    		'_id',
+    		//    'userid',
+    		'title',
+    		'note',
+    		//     'box',
+    		'focus',
+    		'focusType',
+    		'done',
+    		'comments',
+    		'donetime',
+    		 'createdtime',
+    		'repeatId',
+    		'parent',
+    		'isproject',
+    		'tag',
+    		'sound',
+    		'isdue',
+    		'dueinfo',
+    		'repeat',
+        	'doneItems',
+        	'items',
+    );
+protected function getTaskService () {
+	require_once 'Thingslife/Task/Service/TaskServiceFactory.php';
+	return TaskServiceFactory::getInstance()->createTaskService();
 }
-
+}

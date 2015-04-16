@@ -47,6 +47,14 @@ abstract class BaseDao implements IDao {
     	$builder = new QueryBuilder($this->table, $this->getConnection());
     	return $builder;
     }
+    /**
+     * @return DeleteBuilder
+     */
+    public function deleteBuilder() {
+    	require_once 'Juzi/Dao/DeleteBuilder.php';
+    	$builder = new DeleteBuilder($this->table, $this->getConnection());
+    	return $builder;
+    }
     
     /**
      * @return PDO

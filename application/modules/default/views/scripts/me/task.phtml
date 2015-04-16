@@ -1,0 +1,59 @@
+<?php $item=$this->item;?>
+<li node-type="taskItem" id="task-<?php echo $item['_id']?>" action-data='<?php echo $item['json']?>'
+class="<?php if($item['isDue']):?>due<?php endif;?> 
+		<?php if($item['done']=='true'):?>done<?php endif;?> 
+	   <?php if($item['focusType']=='today'):?>today<?php endif;?>
+	   <?php if($item['focusLevel']==1):?>project<?php endif;?>
+	   <?php if(!$item['repeatId']&&$item['focusLevel']!=1):?>things-draggable<?php endif;?>
+	    "
+	    >
+			
+			<!-- 是项目 progress-bar -->
+			<?php if($item['focusLevel']==1):?>
+			<div class="progress-bar">
+		         <div class="progress" style="width:<?php echo $item['doneItems']*100/$item['items'];?>%;">
+		              <a href="javascript:void(0);"><?php echo $item['items']?>任务</a>
+		         </div>
+		    </div>
+			<?php endif;?>
+		    <!-- end progress-bar -->
+		    
+		    <!-- checkbox -->
+			<?php if(!$item['repeatId']&&$item['focusType']!='archived'):?>
+			<div class="checkbox" node-type="done" id="checkbox-<?php echo $item['_id']?>">[ ]</div>
+			<?php endif;?>
+			<!-- end checkbox -->
+			
+		    <?php if(!empty($item['parent'])):?>
+		    	<?php if($this->focusField==='today'||$this->focusField==='schedule'||$this->focusField==='archived'||$this->focusField=='us'):?>
+				<div class="parent"><?php echo $item['parent']['title']?>:</div>
+				<?php endif;?>
+			<?php endif;?>
+			<?php if($this->focusField!='archived'&&$item['focusType']=='archived'):?>
+			<div class="parent doneDate" ><?php echo $item['doneTime'];?></div>
+			<?php endif;?>
+			
+			<div class="title"><?php echo $item['title']?></div>
+			
+			<?php if($item['note']!=''):?>
+				<div class="note-flag">[N]</div>
+			<?php endif;?>
+			
+			<?php if($item['tag']):?>
+				<div class="tag-flag">标签</div>
+			<?php endif;?>
+			
+			<?php if($item['sound']>0):?>
+				<div class="sound-flag">声音</div>
+			<?php endif;?>
+			
+			<?php if($item['comments']>0):?>
+				<a class="comment-flag" id="comments-<?php echo $item['_id'];?>" href="javascript:void(0)">[<?php echo $item['comments']?>评论]</a> 
+			<?php endif;?>
+			<?php if($item['dueDate']):?>
+				<div class="due-text"><?php echo $item['dueInfo']?></div>
+			<?php endif;?>
+			<?php if($item['focusType']=='today'):?>
+				<div class="today-flag">[T]</div>
+			<?php endif;?>
+		</li>

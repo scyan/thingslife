@@ -12,8 +12,8 @@ class IndexController extends Default_BaseController {
         $this->_redirect($this->_helper->url('', 'me', 'default'));
     }
 
-    private function getTaskService () {
+/*     private function getTaskService () {
         require_once 'Thingslife/Task/Service/TaskServiceFactory.php';
         return TaskServiceFactory::getInstance()->createTaskService();
-    }
+    } */
 }

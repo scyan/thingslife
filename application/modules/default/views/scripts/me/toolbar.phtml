@@ -1,0 +1,115 @@
+<?php if($this->focusField=='inbox'):?>
+	<div class="leftbar">
+		<a href="javascript:void(0);" action-type="newTask" id="new-task" class="newtask">新增</a>
+		<a href="javascript:void(0);" action-type="editTask" id="edit-task" class="edittask disabled">编辑</a>
+	</div>
+    <div class="pager"></div>
+    <div class="centerbar"></div>
+    <div class="rightbar">
+    </div>
+<?php elseif ($this->focusField=='today'):?>
+	<div class="leftbar">
+		<a href="javascript:void(0);" action-type="newTask" id="new-task" class="newtask">新增</a>
+		<a href="javascript:void(0);" action-type="editTask" id="edit-task" class="edittask disabled">编辑</a>
+		<a href="javascript:void(0);" action-type="deleteTask" id="delete-task" class="deltask disabled">删除</a>
+	</div>
+    <div class="pager"></div>
+    <div class="centerbar">
+    	<a href="javascript:void(0);" action-type="nextTask" id="notToday-task" class="today disabled ">改日</a>
+    	<a href="javascript:void(0);" action-type="scheduleTask" id="schedule-task"class="schedule disabled">计划</a>
+    	<a href="javascript:void(0);" action-type="archiveTask" id="archive-task" class="logcompleted <?php if(!$this->doneCount):?>disabled<?php endif;?>">归档</a>
+    </div>
+    <div class="rightbar">
+    </div>
+<?php elseif ($this->focusField=='next'):?> 
+	<div class="leftbar">
+		<a href="javascript:void(0);" action-type="newTask" id="new-task" class="newtask">新增</a>
+		<a href="javascript:void(0);" action-type="editTask" id="edit-task" class="edittask disabled">编辑</a>
+		<a href="javascript:void(0);" action-type="deleteTask" id="delete-task" class="deltask disabled">删除</a>
+	</div>
+    <div class="pager"></div>
+    <div class="centerbar">
+    	<a href="javascript:void(0);" action-type="todayTask" id="today-task" class="today disabled hidden">今日</a>
+    	<a href="javascript:void(0);" action-type="nextTask" id="notToday-task" class="today disabled ">改日</a>
+    	<a href="javascript:void(0);" action-type="scheduleTask" id="schedule-task"class="schedule disabled">计划</a>
+    	<a href="javascript:void(0);" action-type="archiveTask" id="archive-task" class="logcompleted <?php if(!$this->doneCount):?>disabled<?php endif;?>">归档</a>
+    </div>
+    <div class="rightbar">
+    </div>
+<?php elseif ($this->focusField=='schedule'):?> 
+	<div class="leftbar">
+		<a href="javascript:void(0);" action-type="newTask" id="new-task" class="newtask">新增</a>
+		<a href="javascript:void(0);" action-type="newRepeat" id="new-repeating" class="newrepeating">新增重复</a>
+		<a href="javascript:void(0);" action-type="editTask" id="edit-task" class="edittask disabled">编辑</a>
+		<a href="javascript:void(0);" action-type="deleteTask" id="delete-task" class="deltask disabled">删除</a>
+	</div>
+    <div class="pager"></div>
+    <div class="centerbar">
+    	<a href="javascript:void(0);" action-type="scheduleTask" id="schedule-task"class="schedule disabled">计划</a>
+    </div>
+    <div class="rightbar">
+    </div>
+<?php elseif ($this->focusField=='someday'):?> 
+	<div class="leftbar">
+		<a href="javascript:void(0);" action-type="newTask" id="new-task" class="newtask">新增</a>
+		<a href="javascript:void(0);" action-type="editTask" id="edit-task" class="edittask disabled">编辑</a>
+		<a href="javascript:void(0);" action-type="deleteTask" id="delete-task" class="deltask disabled">删除</a>
+	</div>
+    <div class="pager"></div>
+    <div class="centerbar">
+    </div>
+    <div class="rightbar">
+    </div>
+<?php elseif ($this->focusField=='project'):?> 
+	<div class="leftbar">
+		<a href="javascript:void(0);" action-type="newProject" class="addproject">新增项目</a>
+		<a href="javascript:void(0);" action-type="editTask" id="edit-task" class="edittask disabled">编辑</a>
+		<a href="javascript:void(0);" action-type="deleteTask" id="delete-task" class="deltask disabled">删除</a>
+	</div>
+    <div class="pager"></div>
+    <div class="centerbar">
+    	<a href="javascript:void(0);" action-type="scheduleTask" id="schedule-task"class="schedule disabled">计划</a>
+    	<a href="javascript:void(0);" action-type="inactiveProject" id="inactive-project"class="inactive disabled">冻结</a>
+    	<a href="javascript:void(0);" action-type="activeProject" id="active-project"class="active disabled hidden">激活</a>
+    </div>
+    <div class="rightbar">
+    </div>
+<?php elseif($this->focusField=='inproject'):?>
+	<div class="leftbar">
+		<a href="javascript:void(0);" action-type="newTask" id="new-task" class="newtask">新增</a>
+		<a href="javascript:void(0);" action-type="editTask" id="edit-task" class="edittask disabled">编辑</a>
+		<a href="javascript:void(0);" action-type="deleteTask" id="delete-task" class="deltask disabled">删除</a>
+	</div>
+    <div class="pager"></div>
+    <div class="centerbar">
+    	<a href="javascript:void(0);" action-type="todayTask" id="today-task" class="today disabled hidden">今日</a>
+    	<a href="javascript:void(0);" action-type="nextTask" id="notToday-task" class="today disabled ">改日</a>
+    	<a href="javascript:void(0);" action-type="archiveTask" id="archive-task" class="logcompleted <?php if(!$this->doneCount):?>disabled<?php endif;?>">归档</a>
+    </div>
+    <div class="rightbar">
+    </div>
+<?php elseif ($this->focusField=='archived'):?> 
+	<div class="leftbar">
+		<a href="javascript:void(0);" action-type="deleteTask" id="delete-task" class="deltask disabled">删除</a>
+    	<a href="javascript:void(0);" action-type="showinproject" class="showinproject hidden">显示项目</a>
+	</div>
+    <div class="pager">
+    	<a href="javascript:void(0);"><span id="current-page">1</span>/<span id="total-page"><?php echo $this->totalPage;?></span> 页</a>&nbsp;&nbsp;
+        <a action-type="changePage" class="<?php if($this->curPage==$this->prePage):?>disabled<?php endif;?>" action-data="<?php echo $this->prePage;?>" class="newtask">上页</a>
+        <a action-type="changePage" class="<?php if($this->curPage==$this->nextPage):?>disabled <?php endif;?>" action-data="<?php echo $this->nextPage;?>" class="newtask">下页</a>
+    </div>
+    <div class="centerbar">
+    </div>
+    <div class="rightbar">
+    </div>
+<?php elseif ($this->focusField=='deleted'):?> 
+	<div class="leftbar">
+		<a href="javascript:void(0);" action-type="clearTrash" id="clear-trash" class="newtask">清空</a>
+	</div>
+    <div class="pager">
+    </div>
+    <div class="centerbar">
+    </div>
+    <div class="rightbar">
+    </div>
+<?php endif;?>
