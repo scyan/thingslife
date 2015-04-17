@@ -454,7 +454,7 @@ class TaskServiceImpl extends BaseService implements ITaskService {
 	//将tag从temp文件夹移动到正式文件夹
 	public function moveTagFile($name){
 	    if(!is_dir($_SERVER['TAG_FOLDER'])){
-	    	mkdir($_SERVER['TAG_FOLDER'],0777,true);
+	    	$mkRes=mkdir($_SERVER['TAG_FOLDER'],0777,true);
 	    	if(!$mkRes){
 	    		return false;
 	    	}
