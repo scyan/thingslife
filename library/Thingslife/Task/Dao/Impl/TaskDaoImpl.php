@@ -31,7 +31,7 @@ EOF;
     public function list_templates () {
         $sql = <<<EOF
         select a._id as template_id,a.*,b.* from `task` a ,`task_repeat` b 
-            where a.repeatId>0 AND a.focus='schedule' AND DATE(b.executeDateTime)<>CURDATE() AND a.show=1 AND a.repeatId=b._id
+            where a.repeatId>0 AND a.focus='schedule' AND (isnull(b.executeTime) or b.executeTime<>CURDATE()) AND a.show=1 AND a.repeatId=b._id
             ;
 EOF;
         try {
@@ -39,7 +39,6 @@ EOF;
             $st->execute();
             return $st->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
-            var_dump($e);
             return false;
         }
     }
@@ -152,9 +151,10 @@ EOF;
 		update `task_repeat` set executeTime=CURDATE() where _id=?;
 EOF;
             $stmt = $db->prepare($updateRepeat);
-            $stmt->execute(array(
+           return $stmt->execute(array(
                 $repeatId
             ));
+            
         } catch (Exception $e) {
             $db->rollback();
             return false;

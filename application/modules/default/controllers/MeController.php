@@ -8,7 +8,7 @@ class MeController extends Default_BaseController {
         parent::init();
         $this->view->mode='me';
     }
-    public function testAction(){
+/*     public function createtaskAction(){
         $this->_helper->layout()->disableLayout();
         $this->_helper->viewRenderer->setNoRender(true);
     	$this->getTaskService()->createTaskFromRepeat();
@@ -17,7 +17,7 @@ class MeController extends Default_BaseController {
         $this->_helper->layout()->disableLayout();
         $this->_helper->viewRenderer->setNoRender(true);
         $this->getTaskService()->moveToToday();
-    }
+    } */
     private $taskList=array(
         'inbox'=>'listInbox',
     	'today'=>'listToday',

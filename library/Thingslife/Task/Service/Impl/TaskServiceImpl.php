@@ -535,7 +535,7 @@ class TaskServiceImpl extends BaseService implements ITaskService {
 	    		$task['tag']=$newTagName;
 	    	}
 	    }
-	    $this->getTaskDao()->createInstance($task,$templateId,$repeatId);
+	    return $this->getTaskDao()->createInstance($task,$templateId,$repeatId);
 	}
 	public function createTaskFromRepeat() {
 		$result=$this->getTaskDao()->list_templates();
@@ -548,7 +548,7 @@ class TaskServiceImpl extends BaseService implements ITaskService {
 		    		if($day==date('N')){
 		    		 //   if(strtotime($repeat['executeTime'])!=$today){
 		    		    	//TODO create task 
-		    		    	$this->createInstance($repeat);
+		    		    	echo $this->createInstance($repeat);
 		    		    	break;
 		    		   // }
 		    		}
@@ -558,7 +558,7 @@ class TaskServiceImpl extends BaseService implements ITaskService {
 		}
 	}
 	public function moveToToday() {
-	   return $this->getTaskDao()->move_to_today();
+	   echo $this->getTaskDao()->move_to_today();
 	}
 	
 	public function getNext($days,$frequency,$start) {

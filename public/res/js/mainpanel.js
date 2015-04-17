@@ -30,6 +30,7 @@ var mainPanel=function(){
 			   }
 		//	 cursorAt: { left: 10, top: 5 }
 		});
+		$('[autogrow=true]',$root).autogrow();
 		//过期时间设置,点击弹出日历
 		$('[action-type=dueDate]',$root).datepicker({
 			dateFormat : 'yy-mm-dd',
