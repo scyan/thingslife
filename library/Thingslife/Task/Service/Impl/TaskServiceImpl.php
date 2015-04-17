@@ -438,6 +438,9 @@ class TaskServiceImpl extends BaseService implements ITaskService {
 	    	header('Content-Type: image/png');
 	    	//TODO notice 修改tag name表示方式
 	    	// imagepng($im,$_SERVER['TAG_FOLDER'].'tag_'.$taskId.'.png');
+	    	if(!is_dir($_SERVER['TMP_TAG_FOLDER'])){
+	    		mkdir($_SERVER['TMP_TAG_FOLDER'],0777,true);
+	    	}
 	    	imagepng($im,$_SERVER['TMP_TAG_FOLDER'].$name);
 	    	imagedestroy($im);
 	    	return array('path'=>Config::get('files.tmp_tag_root').$name,'name'=>$name);
@@ -447,6 +450,9 @@ class TaskServiceImpl extends BaseService implements ITaskService {
 	}
 	//将tag从temp文件夹移动到正式文件夹
 	public function moveTagFile($name){
+	    if(!is_dir($_SERVER['TAG_FOLDER'])){
+	    	mkdir($_SERVER['TAG_FOLDER'],0777);
+	    }
 	    if(file_exists($_SERVER['TMP_TAG_FOLDER'].$name)){
 	    	return rename($_SERVER['TMP_TAG_FOLDER'].$name, $_SERVER['TAG_FOLDER'].$name);
 	    }
