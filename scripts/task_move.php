@@ -26,5 +26,4 @@ $application->bootstrap('service');
 require_once 'Thingslife/Task/Service/TaskServiceFactory.php';
 
 $taskService = TaskServiceFactory::getInstance()->createTaskService();
-$today = strtotime(date('Ymd'));
-$taskService->moveToToday($today);
+$taskService->moveToToday();
