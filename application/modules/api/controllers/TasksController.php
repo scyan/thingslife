@@ -181,7 +181,7 @@ class Api_TasksController extends Api_BaseController {
             if($task&&$editDuedate){
                 $childrenRes=$this->getTaskService()->update_by_params(array('dueDate'=>$task['dueDate']),array('parent'=>$taskId));
             }
-             $this->setSuccess(array('task'=>$this->filter($this->filterKeys,$task)));
+             $this->setSuccess();
         } 
     }
 

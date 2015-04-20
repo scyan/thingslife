@@ -85,7 +85,7 @@ class TaskServiceImpl extends BaseService implements ITaskService {
 	    	unset($fields['toFocusType']);
 	    	$taskId=$this->getTaskDao ()->update_by_id_and_uid ( $fields, $taskId,$uid );
 	    }
-	    if(!$taskId){
+	    if($taskId===false){
 	    	return false;
 	    }
 	    return $fields;

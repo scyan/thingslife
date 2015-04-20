@@ -39,6 +39,7 @@ EOF;
             $st->execute();
             return $st->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
+            echo $e;
             return false;
         }
     }
@@ -96,9 +97,13 @@ EOF;
     }
 
     public function update_by_id_and_uid ($fields, $id, $uid) {
-        return $this->queryHelper()->update($this->table, $fields, "`_id`=? AND `userId`=? ", array(
-            $id , $uid
-        ));
+        try{
+        	return $this->queryHelper()->update($this->table, $fields, "`_id`=? AND `userId`=? ", array(
+            	$id , $uid
+       	 	));
+        }catch(Exception $e){
+        	return false;
+        }
     }
 
     public function multiUpdate ($fields, $conditions) { // 2.0
