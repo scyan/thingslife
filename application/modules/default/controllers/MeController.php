@@ -8,22 +8,6 @@ class MeController extends Default_BaseController {
         parent::init();
         $this->view->mode='me';
     }
-     public function createtaskAction(){
-        if($_SERVER["REMOTE_ADDR"]!='127.0.0.1'){
-        	return;
-        }
-        $this->_helper->layout()->disableLayout();
-        $this->_helper->viewRenderer->setNoRender(true);
-    	$this->getTaskService()->createTaskFromRepeat();
-    }
-    public function movetotodayAction(){
-        if($_SERVER["REMOTE_ADDR"]!='127.0.0.1'){
-        	return;
-        }
-        $this->_helper->layout()->disableLayout();
-        $this->_helper->viewRenderer->setNoRender(true);
-        $this->getTaskService()->moveToToday();
-    } 
     private $taskList=array(
         'inbox'=>'listInbox',
     	'today'=>'listToday',
