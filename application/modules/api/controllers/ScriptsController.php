@@ -4,7 +4,7 @@ require_once dirname(__FILE__) . '/BaseController.php';
 class Api_ScriptsController  extends Api_BaseController {
     public function createtaskAction(){
     	if($_SERVER["REMOTE_ADDR"]!='127.0.0.1'){
-    		return;
+    		exit;
     	}
     	$this->_helper->layout()->disableLayout();
     	$this->_helper->viewRenderer->setNoRender(true);
@@ -12,7 +12,7 @@ class Api_ScriptsController  extends Api_BaseController {
     }
     public function movetotodayAction(){
     	if($_SERVER["REMOTE_ADDR"]!='127.0.0.1'){
-    		return;
+    		exit;
     	}
     	$this->_helper->layout()->disableLayout();
     	$this->_helper->viewRenderer->setNoRender(true);
