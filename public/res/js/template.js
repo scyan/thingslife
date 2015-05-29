@@ -88,7 +88,7 @@ var Templates={
 		'<%=obj.repeat.daysArr.join("，")%><%}%>';
 	},
 	due:function(){
-		return '<%if(obj.repeatId<=0){%><div class="row">'+
+		return '<%if(obj.repeatId<=0||!obj.repeatId){%><div class="row">'+
 		'<label for="due-date-field">过期时间</label> '+
 	//	'<a class="edit-dialog-icons due-date" href="javascript:void(0)" id="due-date" name="dueDate"></a> '+
 		'<input id="due-date-field" name="dueDate" <%if(obj.hasDueDate()){%>value="<%=obj.dueDate.substr(0,10)%>"<%}%>/>'+
