@@ -46,6 +46,9 @@ class Api_TasksController extends Api_BaseController {
         $task['focusType'] = $this->getRequest()->getPost('focusField');
         $task['exeDate'] = $this->getRequest()->getPost('exeDate',null);
         $task['dueDate'] = $this->getRequest()->getPost('dueDate',null);
+        if(!$task['dueDate']){
+            $task['dueDate']=null;
+        }
         $task['parent']=$this->getRequest()->getPost('parent',0);
         $tag=$this->getRequest()->getPost('tag');
         if($tag&&$tag['edit_tag']=='true'){
