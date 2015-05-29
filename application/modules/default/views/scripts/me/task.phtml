@@ -11,7 +11,7 @@ class="<?php if($item['isDue']):?>due<?php endif;?>
 			<!-- 是项目 progress-bar -->
 			<?php if($item['focusLevel']==1):?>
 			<div class="progress-bar">
-		         <div class="progress" style="width:<?php echo $item['doneItems']*100/$item['items'];?>%;">
+		         <div class="progress" style="width:<?php if($item['items']>0):?><?php echo $item['doneItems']*100/$item['items'];?><?php endif;?>%;">
 		              <a href="javascript:void(0);"><?php echo $item['items']?>任务</a>
 		         </div>
 		    </div>
